@@ -3045,6 +3045,14 @@ handle_aerosnap_move_resize (GdkSurface                  *surface,
   int halfright = 0;
   int fullup = 0;
   gboolean fullup_edge = FALSE;
+  GdkWin32Surface *impl = GDK_WIN32_SURFACE (surface);
+
+  if (context->op == GDK_WIN32_DRAGOP_MOVE)
+    {
+      if (impl->toplevel_layout != NULL &&
+         !gdk_toplevel_layout_get_resizable (impl->toplevel_layout))
+        return;
+    }
 
   if (context->op == GDK_WIN32_DRAGOP_RESIZE)
     switch (context->edge)
