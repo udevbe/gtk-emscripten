@@ -426,10 +426,11 @@ gsk_standard_contour_measure_add_point (const graphene_point_t *from,
   float seg_length;
 
   seg_length = graphene_point_distance (from, to, NULL, NULL);
-  if (seg_length == 0)
+  decomp->measure.end += seg_length;
+
+  if (decomp->measure.start >= decomp->measure.end)
     return TRUE;
 
-  decomp->measure.end += seg_length;
   decomp->measure.start_progress = from_progress;
   decomp->measure.end_progress = to_progress;
   decomp->measure.start_point = *from;
