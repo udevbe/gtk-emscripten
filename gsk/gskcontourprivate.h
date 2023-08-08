@@ -80,12 +80,16 @@ gpointer                gsk_contour_init_measure                (const GskContou
                                                                  float                  *out_length);
 void                    gsk_contour_free_measure                (const GskContour       *self,
                                                                  gpointer                data);
+int                     gsk_contour_point_compare               (const GskContour       *self,
+                                                                 GskRealPathPoint       *p1,
+                                                                 GskRealPathPoint       *p2);
+
 void                    gsk_contour_add_segment                 (const GskContour       *self,
                                                                  GskPathBuilder         *builder,
-                                                                 gpointer                measure_data,
                                                                  gboolean                emit_move_to,
-                                                                 float                   start,
-                                                                 float                   end);
+                                                                 GskRealPathPoint       *start,
+                                                                 GskRealPathPoint       *end);
+
 void                    gsk_contour_get_point                   (const GskContour       *self,
                                                                  gpointer                measure_data,
                                                                  float                   offset,

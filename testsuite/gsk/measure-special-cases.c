@@ -27,6 +27,7 @@ test_bad_split (void)
   GskPathMeasure *measure, *measure1;
   GskPathBuilder *builder;
   float split, length, epsilon;
+  GskPathPoint point0, point1;
 
   /* An example that was isolated from the /path/segment test path.c
    * It shows how uneven parametrization of cubics can lead to bad
@@ -37,11 +38,13 @@ test_bad_split (void)
 
   measure = gsk_path_measure_new (path);
   split = 2.962588;
+  gsk_path_measure_get_point (measure, 0, &point0);
+  gsk_path_measure_get_point (measure, split, &point1);
   length = gsk_path_measure_get_length (measure);
   epsilon = MAX (length / 256, 1.f / 1024);
 
   builder = gsk_path_builder_new ();
-  gsk_path_builder_add_segment (builder, measure, 0, split);
+  gsk_path_builder_add_segment (builder, path, &point0, &point1);;
   path1 = gsk_path_builder_free_to_path (builder);
   measure1 = gsk_path_measure_new (path1);
 

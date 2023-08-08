@@ -1323,3 +1323,60 @@ error:
 
   return NULL;
 }
+
+/**
+ * gsk_path_builder_add_segment:
+ * @self: a `GskPathBuilder`
+ * @path: the `GskPath` to take the segment to
+ * @start: the point on @path to start at
+ * @end: the point on @path to end at
+ *
+ * Adds to @self the segment of @path from @start to @end.
+ *
+ * If @start is after @end, the path will first add the segment
+ * from @start to the end of the path, and then add the segment from
+ * the beginning to @end. If the path is closed, these segments will
+ * be connected.
+ *
+ * Since: 4.14
+ */
+void
+gsk_path_builder_add_segment (GskPathBuilder     *self,
+                              GskPath            *path,
+                              const GskPathPoint *start,
+                              const GskPathPoint *end)
+{
+  GskRealPathPoint *s = (GskRealPathPoint *) start;
+  GskRealPathPoint *e = (GskRealPathPoint *) end;
+  const GskContour *contour;
+
+  g_return_if_fail (self != NULL);
+  g_return_if_fail (path != NULL);
+  g_return_if_fail (path == s->path);
+  g_return_if_fail (path == e->path);
+
+  contour = gsk_path_get_contour (path, s->contour);
+
+  if (s->contour == e->contour)
+    {
+      if (gsk_contour_point_compare (contour, s, e) < 0)
+        {
+          gsk_contour_add_segment (contour, self, TRUE, s, e);
+          return;
+        }
+      else if (path->n_contours == 1)
+        {
+          gsk_contour_add_segment (contour, self, TRUE, s, NULL);
+          gsk_contour_add_segment (contour, self, FALSE, NULL, e);
+          return;
+        }
+    }
+
+  gsk_contour_add_segment (contour, self, TRUE, s, NULL);
+
+  for (gsize i = (s->contour + 1) % path->n_contours; i != e->contour; i = (i + 1) % path->n_contours)
+    gsk_path_builder_add_contour (self, gsk_contour_dup (gsk_path_get_contour (path, i)));
+
+  contour = gsk_path_get_contour (path, e->contour);
+  gsk_contour_add_segment (contour, self, FALSE, NULL, e);
+}
