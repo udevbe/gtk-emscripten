@@ -98,6 +98,12 @@ void                    gsk_contour_get_start_point             (const GskContou
                                                                  GskRealPathPoint       *result);
 void                    gsk_contour_get_end_point               (const GskContour       *self,
                                                                  GskRealPathPoint       *result);
+gboolean                gsk_contour_get_previous_point          (const GskContour       *self,
+                                                                 GskRealPathPoint       *point,
+                                                                 GskRealPathPoint       *result);
+gboolean                gsk_contour_get_next_point              (const GskContour       *self,
+                                                                 GskRealPathPoint       *point,
+                                                                 GskRealPathPoint       *result);
 float                   gsk_contour_get_distance                (const GskContour       *self,
                                                                  GskRealPathPoint       *point,
                                                                  gpointer                measure_data);

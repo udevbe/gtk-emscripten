@@ -117,6 +117,16 @@ gboolean                gsk_path_get_closest_point              (GskPath        
                                                                  GskPathPoint           *result);
 
 GDK_AVAILABLE_IN_4_14
+gboolean                gsk_path_get_previous_point             (GskPath                *self,
+                                                                 const GskPathPoint     *point,
+                                                                 GskPathPoint           *result);
+
+GDK_AVAILABLE_IN_4_14
+gboolean                gsk_path_get_next_point                 (GskPath                *self,
+                                                                 const GskPathPoint     *point,
+                                                                 GskPathPoint           *result);
+
+GDK_AVAILABLE_IN_4_14
 gboolean                gsk_path_get_start_point                (GskPath                *self,
                                                                  GskPathPoint           *result);
 GDK_AVAILABLE_IN_4_14

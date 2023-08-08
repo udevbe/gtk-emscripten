@@ -70,6 +70,12 @@ struct _GskContourClass
                                                  GskRealPathPoint       *result);
   void                  (* get_end_point)       (const GskContour       *contour,
                                                  GskRealPathPoint       *result);
+  gboolean              (* get_previous_point)  (const GskContour       *contour,
+                                                 GskRealPathPoint       *point,
+                                                 GskRealPathPoint       *result);
+  gboolean              (* get_next_point)      (const GskContour       *contour,
+                                                 GskRealPathPoint       *point,
+                                                 GskRealPathPoint       *result);
   void                  (* get_position)        (const GskContour       *contour,
                                                  GskRealPathPoint       *point,
                                                  graphene_point_t       *position);
@@ -704,6 +710,50 @@ gsk_standard_contour_get_end_point (const GskContour *contour,
   result->data.std.t = 1;
 }
 
+static gboolean
+gsk_standard_contour_get_previous_point (const GskContour *contour,
+                                         GskRealPathPoint *point,
+                                         GskRealPathPoint *result)
+{
+  if (point->data.std.t > 0)
+    {
+      result->data.std.idx = point->data.std.idx;
+      result->data.std.t = 0;
+      return TRUE;
+    }
+  else if (point->data.std.idx > 1)
+    {
+      result->data.std.idx = point->data.std.idx - 1;
+      result->data.std.t = 0;
+      return TRUE;
+    }
+
+  return FALSE;
+}
+
+static gboolean
+gsk_standard_contour_get_next_point (const GskContour *contour,
+                                     GskRealPathPoint *point,
+                                     GskRealPathPoint *result)
+{
+  GskStandardContour *self = (GskStandardContour *) contour;
+
+  if (point->data.std.t < 1)
+    {
+      result->data.std.idx = point->data.std.idx;
+      result->data.std.t = 1;
+      return TRUE;
+    }
+  else if (point->data.std.idx + 1 < self->n_ops - 1)
+    {
+      result->data.std.idx = point->data.std.idx + 1;
+      result->data.std.t = 1;
+      return TRUE;
+    }
+
+  return FALSE;
+}
+
 static void
 gsk_standard_contour_get_point (const GskContour *contour,
                                 gpointer          measure_data,
@@ -871,6 +921,8 @@ static const GskContourClass GSK_STANDARD_CONTOUR_CLASS =
   gsk_standard_contour_get_closest_point,
   gsk_standard_contour_get_start_point,
   gsk_standard_contour_get_end_point,
+  gsk_standard_contour_get_previous_point,
+  gsk_standard_contour_get_next_point,
   gsk_standard_contour_get_position,
   gsk_standard_contour_get_tangent,
   gsk_standard_contour_get_curvature,
@@ -1071,6 +1123,22 @@ gsk_contour_get_end_point (const GskContour *self,
                            GskRealPathPoint *result)
 {
   self->klass->get_end_point (self, result);
+}
+
+gboolean
+gsk_contour_get_previous_point (const GskContour *self,
+                                GskRealPathPoint *point,
+                                GskRealPathPoint *result)
+{
+  return self->klass->get_previous_point (self, point, result);
+}
+
+gboolean
+gsk_contour_get_next_point (const GskContour *self,
+                            GskRealPathPoint *point,
+                            GskRealPathPoint *result)
+{
+  return self->klass->get_next_point (self, point, result);
 }
 
 void
