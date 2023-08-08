@@ -66,9 +66,9 @@ struct _GskContourClass
                                                  float                   threshold,
                                                  GskRealPathPoint       *result,
                                                  float                  *out_dist);
-  gboolean              (* get_start_point)     (const GskContour       *contour,
+  void                  (* get_start_point)     (const GskContour       *contour,
                                                  GskRealPathPoint       *result);
-  gboolean              (* get_end_point)       (const GskContour       *contour,
+  void                  (* get_end_point)       (const GskContour       *contour,
                                                  GskRealPathPoint       *result);
   void                  (* get_position)        (const GskContour       *contour,
                                                  GskRealPathPoint       *point,
@@ -686,17 +686,15 @@ gsk_standard_contour_get_closest_point (const GskContour       *contour,
   return FALSE;
 }
 
-static gboolean
+static void
 gsk_standard_contour_get_start_point (const GskContour *contour,
                                       GskRealPathPoint *result)
 {
   result->data.std.idx = 1;
   result->data.std.t = 0;
-
-  return TRUE;
 }
 
-static gboolean
+static void
 gsk_standard_contour_get_end_point (const GskContour *contour,
                                     GskRealPathPoint *result)
 {
@@ -704,8 +702,6 @@ gsk_standard_contour_get_end_point (const GskContour *contour,
 
   result->data.std.idx = self->n_ops - 1;
   result->data.std.t = 1;
-
-  return TRUE;
 }
 
 static void
