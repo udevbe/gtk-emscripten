@@ -66,6 +66,10 @@ struct _GskContourClass
                                                  float                   threshold,
                                                  GskRealPathPoint       *result,
                                                  float                  *out_dist);
+  gboolean              (* get_start_point)     (const GskContour       *contour,
+                                                 GskRealPathPoint       *result);
+  gboolean              (* get_end_point)       (const GskContour       *contour,
+                                                 GskRealPathPoint       *result);
   void                  (* get_position)        (const GskContour       *contour,
                                                  GskRealPathPoint       *point,
                                                  graphene_point_t       *position);
@@ -682,6 +686,28 @@ gsk_standard_contour_get_closest_point (const GskContour       *contour,
   return FALSE;
 }
 
+static gboolean
+gsk_standard_contour_get_start_point (const GskContour *contour,
+                                      GskRealPathPoint *result)
+{
+  result->data.std.idx = 1;
+  result->data.std.t = 0;
+
+  return TRUE;
+}
+
+static gboolean
+gsk_standard_contour_get_end_point (const GskContour *contour,
+                                    GskRealPathPoint *result)
+{
+  GskStandardContour *self = (GskStandardContour *) contour;
+
+  result->data.std.idx = self->n_ops - 1;
+  result->data.std.t = 1;
+
+  return TRUE;
+}
+
 static void
 gsk_standard_contour_get_point (const GskContour *contour,
                                 gpointer          measure_data,
@@ -847,6 +873,8 @@ static const GskContourClass GSK_STANDARD_CONTOUR_CLASS =
   gsk_standard_contour_reverse,
   gsk_standard_contour_get_winding,
   gsk_standard_contour_get_closest_point,
+  gsk_standard_contour_get_start_point,
+  gsk_standard_contour_get_end_point,
   gsk_standard_contour_get_position,
   gsk_standard_contour_get_tangent,
   gsk_standard_contour_get_curvature,
@@ -1033,6 +1061,20 @@ gsk_contour_get_closest_point (const GskContour       *self,
                                float                  *out_dist)
 {
   return self->klass->get_closest_point (self, point, threshold, result, out_dist);
+}
+
+void
+gsk_contour_get_start_point (const GskContour *self,
+                             GskRealPathPoint *result)
+{
+  self->klass->get_start_point (self, result);
+}
+
+void
+gsk_contour_get_end_point (const GskContour *self,
+                           GskRealPathPoint *result)
+{
+  self->klass->get_end_point (self, result);
 }
 
 void

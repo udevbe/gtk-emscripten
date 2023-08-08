@@ -541,6 +541,74 @@ gsk_path_get_closest_point (GskPath                *self,
 }
 
 /**
+ * gsk_path_get_start_point:
+ * @self: a `GskPath`
+ * @result: (out caller-allocates): return location for point
+ *
+ * Gets the start point of the path.
+ *
+ * An empty path has no points, so `FALSE`
+ * is returned in this case.
+ *
+ * Returns: `TRUE` if @result was filled
+ *
+ * Since: 4.14
+ */
+gboolean
+gsk_path_get_start_point (GskPath      *self,
+                          GskPathPoint *result)
+{
+  GskRealPathPoint *res = (GskRealPathPoint *) result;
+
+  g_return_val_if_fail (self != NULL, FALSE);
+  g_return_val_if_fail (result != NULL, FALSE);
+
+  if (self->n_contours == 0)
+    return FALSE;
+
+  gsk_contour_get_start_point (self->contours[0], res);
+
+  res->path = self;
+  res->contour = 0;
+
+  return TRUE;
+}
+
+/**
+ * gsk_path_get_end_point:
+ * @self: a `GskPath`
+ * @result: (out caller-allocates): return location for point
+ *
+ * Gets the end point of the path.
+ *
+ * An empty path has no points, so `FALSE`
+ * is returned in this case.
+ *
+ * Returns: `TRUE` if @result was filled
+ *
+ * Since: 4.14
+ */
+gboolean
+gsk_path_get_end_point (GskPath      *self,
+                        GskPathPoint *result)
+{
+  GskRealPathPoint *res = (GskRealPathPoint *) result;
+
+  g_return_val_if_fail (self != NULL, FALSE);
+  g_return_val_if_fail (result!= NULL, FALSE);
+
+  if (self->n_contours == 0)
+    return FALSE;
+
+  gsk_contour_get_end_point (self->contours[self->n_contours - 1], res);
+
+  res->path = self;
+  res->contour = self->n_contours - 1;
+
+  return TRUE;
+}
+
+/**
  * gsk_path_foreach:
  * @self: a `GskPath`
  * @flags: flags to pass to the foreach function. See [flags@Gsk.PathForeachFlags]
