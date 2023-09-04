@@ -2972,6 +2972,20 @@ gtk_window_supports_client_shadow (GtkWindow *window)
 }
 
 static void
+gtk_window_reset_csd (GtkWindow *window)
+{
+  GtkWindowPrivate *priv = gtk_window_get_instance_private (window);
+  GtkWidget *widget = GTK_WIDGET (window);
+
+  if (priv->use_client_shadow)
+    gtk_widget_remove_css_class (widget, "csd");
+  else
+    gtk_widget_remove_css_class (widget, "solid-csd");
+
+  priv->client_decorated = FALSE;
+}
+
+static void
 gtk_window_enable_csd (GtkWindow *window)
 {
   GtkWindowPrivate *priv = gtk_window_get_instance_private (window);
@@ -3036,10 +3050,7 @@ gtk_window_set_titlebar (GtkWindow *window,
 
   if (titlebar == NULL)
     {
-      /* these are updated in realize() */
-      priv->client_decorated = FALSE;
-      gtk_widget_remove_css_class (widget, "csd");
-      gtk_widget_remove_css_class (widget, "solid-csd");
+      gtk_window_reset_csd (window);
     }
   else
     {
@@ -3602,7 +3613,7 @@ gtk_window_set_default_size_internal (GtkWindow    *window,
  * Sets the default size of a window.
  *
  * The default size of a window is the size that will be used if no other constraints apply.
- * 
+ *
  * The default size will be updated whenever the window is resized
  * to reflect the new size, unless the window is forced to a size,
  * like when it is maximized or fullscreened.
@@ -3767,7 +3778,7 @@ update_csd_visibility (GtkWindow *window)
     return FALSE;
 
   visible = !priv->fullscreen &&
-            priv->decorated;
+            priv->client_decorated;
 
   gtk_widget_set_child_visible (priv->title_box, visible);
 
@@ -3799,7 +3810,8 @@ _gtk_window_request_csd (GtkWindow *window)
 }
 
 static gboolean
-gtk_window_should_use_csd (GtkWindow *window)
+gtk_window_should_use_csd (GtkWindow *window,
+                           gboolean   toplevel_is_ssd)
 {
   GtkWindowPrivate *priv = gtk_window_get_instance_private (window);
   const char *csd_env;
@@ -3818,11 +3830,7 @@ gtk_window_should_use_csd (GtkWindow *window)
 #endif
 
 #ifdef GDK_WINDOWING_WAYLAND
-  if (GDK_IS_WAYLAND_DISPLAY (gtk_widget_get_display (GTK_WIDGET (window))))
-    {
-      GdkDisplay *gdk_display = gtk_widget_get_display (GTK_WIDGET (window));
-      return !gdk_wayland_display_prefers_ssd (gdk_display);
-    }
+  return toplevel_is_ssd;
 #endif
 
 #ifdef GDK_WINDOWING_WIN32
@@ -4075,9 +4083,6 @@ update_realized_window_properties (GtkWindow *window)
 
   update_opaque_region (window);
 
-  if (!priv->client_decorated || !priv->use_client_shadow)
-    return;
-
   gtk_native_get_surface_transform (GTK_NATIVE (window), &native_x, &native_y);
 
   /* update the input shape, which makes it so that clicks
@@ -4288,15 +4293,13 @@ toplevel_compute_size (GdkToplevel     *toplevel,
 }
 
 static void
-gtk_window_realize (GtkWidget *widget)
+create_default_titlebar (GtkWindow *window,
+                         gboolean   toplevel_is_ssd)
 {
-  GtkWindow *window = GTK_WINDOW (widget);
   GtkWindowPrivate *priv = gtk_window_get_instance_private (window);
-  GdkSurface *surface;
-  GdkFrameClock *frame_clock;
 
   /* Create default title bar */
-  if (!priv->client_decorated && gtk_window_should_use_csd (window))
+  if (!priv->client_decorated && gtk_window_should_use_csd (window, toplevel_is_ssd))
     {
       if (gtk_window_is_composited (window))
         {
@@ -4309,7 +4312,7 @@ gtk_window_realize (GtkWidget *widget)
               gtk_widget_add_css_class (priv->title_box, "titlebar");
               gtk_widget_add_css_class (priv->title_box, "default-decoration");
 
-              gtk_widget_insert_before (priv->title_box, widget, NULL);
+              gtk_widget_insert_before (priv->title_box, GTK_WIDGET (window), NULL);
             }
 
           update_window_actions (window);
@@ -4317,6 +4320,46 @@ gtk_window_realize (GtkWidget *widget)
       else
         priv->use_client_shadow = FALSE;
     }
+}
+
+#ifdef GDK_WINDOWING_WAYLAND
+static void
+wayland_handle_decoration (GdkToplevel *toplevel,
+                           GParamSpec  *pspec,
+                           GtkWindow   *window)
+{
+  gboolean ssd;
+
+  g_object_get (toplevel, "is-ssd", &ssd, NULL);
+
+  GtkWindowPrivate *priv = gtk_window_get_instance_private (window);
+
+  create_default_titlebar (window, ssd);
+
+  gdk_toplevel_set_decorated (toplevel, priv->decorated && !priv->client_decorated);
+
+  if (priv->client_decorated && ssd)
+    {
+      priv->use_client_shadow = FALSE;
+      gtk_window_reset_csd (window);
+    }
+  else if (!priv->client_decorated && !ssd)
+    {
+      gtk_window_enable_csd (window);
+    }
+
+  update_window_actions (window);
+  gtk_widget_queue_resize (GTK_WIDGET (window));
+}
+#endif
+
+static void
+gtk_window_realize (GtkWidget *widget)
+{
+  GtkWindow *window = GTK_WINDOW (widget);
+  GtkWindowPrivate *priv = gtk_window_get_instance_private (window);
+  GdkSurface *surface;
+  GdkFrameClock *frame_clock;
 
   surface = gdk_surface_new_toplevel (gtk_widget_get_display (widget));
   priv->surface = surface;
@@ -4348,17 +4391,24 @@ gtk_window_realize (GtkWidget *widget)
   if (priv->title)
     gdk_toplevel_set_title (GDK_TOPLEVEL (surface), priv->title);
 
-  gdk_toplevel_set_decorated (GDK_TOPLEVEL (surface), priv->decorated && !priv->client_decorated);
+  
   gdk_toplevel_set_deletable (GDK_TOPLEVEL (surface), priv->deletable);
 
 #ifdef GDK_WINDOWING_WAYLAND
   if (GDK_IS_WAYLAND_SURFACE (surface))
     {
+      g_signal_connect (GDK_WAYLAND_TOPLEVEL (surface), "notify::is-ssd",
+                        G_CALLBACK (wayland_handle_decoration),
+                        surface);
+
       if (priv->client_decorated)
-        gdk_wayland_toplevel_announce_csd (GDK_TOPLEVEL (surface));
+        gdk_wayland_toplevel_request_csd (GDK_TOPLEVEL (surface));
       else
-        gdk_wayland_toplevel_announce_ssd (GDK_TOPLEVEL (surface));
+        gdk_wayland_toplevel_request_ssd (GDK_TOPLEVEL (surface));
     }
+#else
+  create_default_titlebar (window, FALSE);
+  gdk_toplevel_set_decorated (GDK_TOPLEVEL (surface), priv->decorated && !priv->client_decorated);
 #endif
 
   gdk_toplevel_set_modal (GDK_TOPLEVEL (surface), priv->modal);
