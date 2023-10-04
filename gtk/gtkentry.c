@@ -170,6 +170,7 @@ struct _GtkEntryPrivate
 
   GtkWidget     *text;
   GtkWidget     *progress_widget;
+  GSignalGroup  *buffer_signals;
 
   guint         show_emoji_icon         : 1;
   guint         editing_canceled        : 1; /* Only used by GtkCellRendererText */
@@ -1351,12 +1352,21 @@ notify_cb (GObject    *object,
 }
 
 static void
+length_changed_cb (GtkEntry *entry)
+{
+  g_object_notify_by_pspec (G_OBJECT (entry), entry_props[PROP_TEXT_LENGTH]);
+}
+
+static void
 connect_text_signals (GtkEntry *entry)
 {
   GtkEntryPrivate *priv = gtk_entry_get_instance_private (entry);
 
   g_signal_connect (priv->text, "activate", G_CALLBACK (activate_cb), entry);
   g_signal_connect (priv->text, "notify", G_CALLBACK (notify_cb), entry);
+
+  g_signal_group_connect_swapped (priv->buffer_signals, "notify::length",
+                                  G_CALLBACK (length_changed_cb), entry);
 }
 
 static void
@@ -1385,9 +1395,14 @@ gtk_entry_init (GtkEntry *entry)
   GtkGesture *catchall;
 
   priv->text = gtk_text_new ();
+  priv->buffer_signals = g_signal_group_new (GTK_TYPE_ENTRY_BUFFER);
   gtk_widget_set_parent (priv->text, GTK_WIDGET (entry));
   gtk_editable_init_delegate (GTK_EDITABLE (entry));
   connect_text_signals (entry);
+
+  g_object_bind_property (priv->text, "buffer",
+                          priv->buffer_signals, "target",
+                          G_BINDING_SYNC_CREATE);
 
   catchall = gtk_gesture_click_new ();
   g_signal_connect (catchall, "pressed",
@@ -1423,6 +1438,7 @@ G_GNUC_END_IGNORE_DEPRECATIONS
       gtk_editable_finish_delegate (GTK_EDITABLE (entry));
     }
   g_clear_pointer (&priv->text, gtk_widget_unparent);
+  g_clear_object (&priv->buffer_signals);
 
   G_OBJECT_CLASS (gtk_entry_parent_class)->dispose (object);
 }
