@@ -1140,6 +1140,19 @@ local_options (GApplication *app,
   return -1;
 }
 
+static void
+startup (GApplication *app,
+         gpointer      data)
+{
+  GSettings *settings = data;
+  const char *session_id;
+
+  session_id = gtk_application_get_current_session_id (GTK_APPLICATION (app));
+
+  if (session_id)
+    g_settings_set_string (settings, "session-id", session_id);
+}
+
 int
 main (int argc, char **argv)
 {
@@ -1156,6 +1169,8 @@ main (int argc, char **argv)
     { "app.about", { "F1", NULL } },
     { "app.quit", { "<Control>q", NULL } },
   };
+  GSettings *settings;
+  char *session_id;
   int i;
 
   app = gtk_application_new ("org.gtk.Demo4", G_APPLICATION_NON_UNIQUE|G_APPLICATION_HANDLES_COMMAND_LINE);
@@ -1163,6 +1178,11 @@ main (int argc, char **argv)
   g_action_map_add_action_entries (G_ACTION_MAP (app),
                                    app_entries, G_N_ELEMENTS (app_entries),
                                    app);
+
+  settings = g_settings_new ("org.gtk.Demo4");
+  session_id = g_settings_get_string (settings, "session-id");
+  gtk_application_set_session_id (app, session_id);
+  g_free (session_id);
 
   for (i = 0; i < G_N_ELEMENTS (accels); i++)
     gtk_application_set_accels_for_action (app, accels[i].action_and_target, accels[i].accelerators);
@@ -1175,8 +1195,11 @@ main (int argc, char **argv)
   g_signal_connect (app, "activate", G_CALLBACK (activate), NULL);
   g_signal_connect (app, "command-line", G_CALLBACK (command_line), NULL);
   g_signal_connect (app, "handle-local-options", G_CALLBACK (local_options), NULL);
+  g_signal_connect (app, "startup", G_CALLBACK (startup), settings);
 
   g_application_run (G_APPLICATION (app), argc, argv);
+
+  g_object_unref (settings);
 
   return 0;
 }
