@@ -125,7 +125,6 @@ _gsk_render_node_ref (GskRenderNode *node)
 
 GskRenderNode *         gsk_color_node_new2                     (const GdkColor         *color,
                                                                  const graphene_rect_t  *bounds);
-
 const GdkColor *        gsk_color_node_get_color2               (const GskRenderNode    *node);
 
 GskRenderNode *         gsk_border_node_new2                    (const GskRoundedRect   *outline,
@@ -169,6 +168,14 @@ GskRenderNode * gsk_text_node_new2                      (PangoFont              
                                                          const GdkColor         *color,
                                                          const graphene_point_t *offset);
 const GdkColor *gsk_text_node_get_color2                (const GskRenderNode    *node);
+
+typedef enum
+{
+  GSK_HUE_INTERPOLATION_SHORTER,
+  GSK_HUE_INTERPOLATION_LONGER,
+  GSK_HUE_INTERPOLATION_INCREASING,
+  GSK_HUE_INTERPOLATION_DECREASING,
+} GskHueInterpolation;
 
 G_END_DECLS
 
