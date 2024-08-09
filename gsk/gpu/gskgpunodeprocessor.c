@@ -2443,6 +2443,7 @@ gsk_gpu_node_processor_add_outset_shadow_node (GskGpuNodeProcessor *self,
 }
 
 typedef void (* GradientOpFunc) (GskGpuNodeProcessor  *self,
+                                 GdkColorState        *target,
                                  GskRenderNode        *node,
                                  const GskColorStop2  *stops,
                                  gsize                 n_stops);
@@ -2450,6 +2451,7 @@ typedef void (* GradientOpFunc) (GskGpuNodeProcessor  *self,
 static void
 gsk_gpu_node_processor_add_gradient_node (GskGpuNodeProcessor *self,
                                           GskRenderNode       *node,
+                                          GdkColorState       *ics,
                                           const GskColorStop2 *stops,
                                           gsize                n_stops,
                                           GradientOpFunc       func)
@@ -2459,10 +2461,16 @@ gsk_gpu_node_processor_add_gradient_node (GskGpuNodeProcessor *self,
   graphene_rect_t bounds;
   gsize i, j;
   GskGpuImage *image;
+  GdkColorState *target;
 
-  if (n_stops < 8)
+  if (GDK_IS_DEFAULT_COLOR_STATE (ics))
+    target = self->ccs;
+  else
+    target = ics;
+
+  if (n_stops < 8 && GDK_IS_DEFAULT_COLOR_STATE (ics))
     {
-      func (self, node, stops, n_stops);
+      func (self, target, node, stops, n_stops);
       return;
     }
 
@@ -2518,33 +2526,57 @@ gsk_gpu_node_processor_add_gradient_node (GskGpuNodeProcessor *self,
           j++;
         }
 
-      func (&other, node, real_stops, j);
+      func (&other, target, node, real_stops, j);
     }
 
   gsk_gpu_node_processor_finish_draw (&other, image);
 
-  gsk_gpu_texture_op (self->frame,
-                      gsk_gpu_clip_get_shader_clip (&self->clip, &self->offset, &bounds),
-                      &self->offset,
-                      &(GskGpuShaderImage) {
-                          image,
-                          GSK_GPU_SAMPLER_DEFAULT,
-                          &node->bounds,
-                          &bounds
-                      });
+  if (GDK_IS_DEFAULT_COLOR_STATE (ics))
+    {
+      gsk_gpu_texture_op (self->frame,
+                          gsk_gpu_clip_get_shader_clip (&self->clip, &self->offset, &bounds),
+                          &self->offset,
+                          &(GskGpuShaderImage) {
+                            image,
+                            GSK_GPU_SAMPLER_DEFAULT,
+                            &node->bounds,
+                            &bounds
+                          });
+    }
+  else
+    {
+      const GdkCicp *cicp = gdk_color_state_get_cicp (ics);
+
+      g_assert (cicp != NULL);
+
+      gsk_gpu_convert_from_cicp_op (self->frame,
+                                    gsk_gpu_clip_get_shader_clip (&self->clip, &self->offset, &bounds),
+                                    cicp,
+                                    gsk_gpu_color_states_create_cicp (self->ccs, TRUE, TRUE),
+                                    1,
+                                    TRUE,
+                                    &self->offset,
+                                    &(GskGpuShaderImage) {
+                                      image,
+                                      GSK_GPU_SAMPLER_DEFAULT,
+                                      &node->bounds,
+                                      &bounds
+                                    });
+    }
 
   g_object_unref (image);
 }
 
 static void
 gsk_gpu_node_processor_linear_gradient_op (GskGpuNodeProcessor  *self,
+                                           GdkColorState        *target,
                                            GskRenderNode        *node,
                                            const GskColorStop2  *stops,
                                            gsize                 n_stops)
 {
   gsk_gpu_linear_gradient_op (self->frame,
                               gsk_gpu_clip_get_shader_clip (&self->clip, &self->offset, &node->bounds),
-                              self->ccs,
+                              target,
                               self->opacity,
                               &self->offset,
                               gsk_linear_gradient_node_get_interpolation_color_state (node),
@@ -2563,6 +2595,7 @@ gsk_gpu_node_processor_add_linear_gradient_node (GskGpuNodeProcessor *self,
 {
   gsk_gpu_node_processor_add_gradient_node (self,
                                             node,
+                                            gsk_linear_gradient_node_get_interpolation_color_state (node),
                                             gsk_linear_gradient_node_get_color_stops2 (node),
                                             gsk_linear_gradient_node_get_n_color_stops (node),
                                             gsk_gpu_node_processor_linear_gradient_op);
@@ -2570,13 +2603,14 @@ gsk_gpu_node_processor_add_linear_gradient_node (GskGpuNodeProcessor *self,
 
 static void
 gsk_gpu_node_processor_radial_gradient_op (GskGpuNodeProcessor  *self,
+                                           GdkColorState        *target,
                                            GskRenderNode        *node,
                                            const GskColorStop2  *stops,
                                            gsize                 n_stops)
 {
   gsk_gpu_radial_gradient_op (self->frame,
                               gsk_gpu_clip_get_shader_clip (&self->clip, &self->offset, &node->bounds),
-                              self->ccs,
+                              target,
                               self->opacity,
                               &self->offset,
                               gsk_radial_gradient_node_get_interpolation_color_state (node),
@@ -2600,6 +2634,7 @@ gsk_gpu_node_processor_add_radial_gradient_node (GskGpuNodeProcessor *self,
 {
   gsk_gpu_node_processor_add_gradient_node (self,
                                             node,
+                                            gsk_radial_gradient_node_get_interpolation_color_state (node),
                                             gsk_radial_gradient_node_get_color_stops2 (node),
                                             gsk_radial_gradient_node_get_n_color_stops (node),
                                             gsk_gpu_node_processor_radial_gradient_op);
@@ -2607,13 +2642,14 @@ gsk_gpu_node_processor_add_radial_gradient_node (GskGpuNodeProcessor *self,
 
 static void
 gsk_gpu_node_processor_conic_gradient_op (GskGpuNodeProcessor  *self,
+                                          GdkColorState        *target,
                                           GskRenderNode        *node,
                                           const GskColorStop2  *stops,
                                           gsize                 n_stops)
 {
   gsk_gpu_conic_gradient_op (self->frame,
                              gsk_gpu_clip_get_shader_clip (&self->clip, &self->offset, &node->bounds),
-                             self->ccs,
+                             target,
                              self->opacity,
                              &self->offset,
                              gsk_conic_gradient_node_get_interpolation_color_state (node),
@@ -2631,6 +2667,7 @@ gsk_gpu_node_processor_add_conic_gradient_node (GskGpuNodeProcessor *self,
 {
   gsk_gpu_node_processor_add_gradient_node (self,
                                             node,
+                                            gsk_conic_gradient_node_get_interpolation_color_state (node),
                                             gsk_conic_gradient_node_get_color_stops2 (node),
                                             gsk_conic_gradient_node_get_n_color_stops (node),
                                             gsk_gpu_node_processor_conic_gradient_op);
@@ -4356,4 +4393,3 @@ gsk_gpu_node_processor_process (GskGpuFrame           *frame,
 
   cairo_region_destroy (clip);
 }
-
