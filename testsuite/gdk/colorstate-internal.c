@@ -21,6 +21,7 @@ TransferTest transfers[] = {
   { "hlg", hlg_oetf, hlg_eotf },
   { "gamma22", gamma22_oetf, gamma22_eotf },
   { "gamma28", gamma28_oetf, gamma28_eotf },
+  { "oklab", to_oklab_nl, from_oklab_nl },
 };
 
 static void
@@ -49,6 +50,8 @@ static MatrixTest matrices[] = {
   { "ntsc", ntsc_to_xyz, xyz_to_ntsc },
   { "p3", p3_to_xyz, xyz_to_p3 },
   { "srgb<>rec2020", rec2020_to_srgb, srgb_to_rec2020 },
+  { "oklab<>lms", oklab_to_lms, lms_to_oklab },
+  { "lms<>srgb", lms_to_srgb, srgb_to_lms },
 };
 
 #define IDX(i,j) 3*i+j
