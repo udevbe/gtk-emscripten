@@ -1,0 +1,22 @@
+clip {
+  clip: 4 4 42 42;
+  child: color-matrix {
+    matrix: matrix3d(255, 0, 0, 0, 0, 255, 0, 0, 0, 0, 255, 0, 0, 0, 0, 1);
+    child: blend {
+      mode: difference;
+      bottom: linear-gradient {
+        bounds: 0 0 50 50;
+        start: 0 0;
+        end: 0 50;
+        stops: 0 rgb(255,0,0), 1 rgb(255,255,0);
+      }
+      top: linear-gradient {
+        bounds: 0 0 50 50;
+        start: 0 0;
+        end: 0 50;
+        stops: 0 rgb(255,0,0), 1 rgb(255,255,0);
+        interpolation: rec2100-linear;
+      }
+    }
+  }
+}
