@@ -54,19 +54,20 @@ typedef enum {
 } GdkDebugFlags;
 
 typedef enum {
-  GDK_FEATURE_OPENGL           = 1 << 0,
-  GDK_FEATURE_GL_API           = 1 << 1,
-  GDK_FEATURE_GLES_API         = 1 << 2,
-  GDK_FEATURE_EGL              = 1 << 3,
-  GDK_FEATURE_GLX              = 1 << 4,
-  GDK_FEATURE_WGL              = 1 << 5,
-  GDK_FEATURE_VULKAN           = 1 << 6,
-  GDK_FEATURE_DMABUF           = 1 << 7,
-  GDK_FEATURE_OFFLOAD          = 1 << 8,
-  GDK_FEATURE_COLOR_MANAGEMENT = 1 << 9,
+  GDK_FEATURE_OPENGL             = 1 <<  0,
+  GDK_FEATURE_GL_API             = 1 <<  1,
+  GDK_FEATURE_GLES_API           = 1 <<  2,
+  GDK_FEATURE_EGL                = 1 <<  3,
+  GDK_FEATURE_GLX                = 1 <<  4,
+  GDK_FEATURE_WGL                = 1 <<  5,
+  GDK_FEATURE_VULKAN             = 1 <<  6,
+  GDK_FEATURE_DMABUF             = 1 <<  7,
+  GDK_FEATURE_OFFLOAD            = 1 <<  8,
+  GDK_FEATURE_COLOR_MANAGEMENT   = 1 <<  9,
+  GDK_FEATURE_SESSION_MANAGEMENT = 1 << 10,
 } GdkFeatures;
 
-#define GDK_ALL_FEATURES ((1 << 10) - 1)
+#define GDK_ALL_FEATURES ((1 << 11) - 1)
 
 extern guint _gdk_debug_flags;
 

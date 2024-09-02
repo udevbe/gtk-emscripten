@@ -358,6 +358,9 @@ disable certain features.
 `color-mgmt`
 : Disable color management
 
+`session-mgmt`
+: Disable session management
+
 ### `GDK_GL_DISABLE`
 
 This variable can be set to a list of values, which cause GDK to

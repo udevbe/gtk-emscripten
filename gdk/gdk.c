@@ -142,16 +142,17 @@ static const GdkDebugKey gdk_debug_keys[] = {
 };
 
 static const GdkDebugKey gdk_feature_keys[] = {
-  { "gl",         GDK_FEATURE_OPENGL,           "Disable OpenGL support" },
-  { "gl-api",     GDK_FEATURE_GL_API,           "Disable non-GLES GL API" },
-  { "gles-api",   GDK_FEATURE_GLES_API,         "Disable GLES GL API" },
-  { "egl",        GDK_FEATURE_EGL,              "Disable EGL" },
-  { "glx",        GDK_FEATURE_GLX,              "Disable GLX" },
-  { "wgl",        GDK_FEATURE_WGL,              "Disable WGL" },
-  { "vulkan",     GDK_FEATURE_VULKAN,           "Disable Vulkan support" },
-  { "dmabuf",     GDK_FEATURE_DMABUF,           "Disable dmabuf support" },
-  { "offload",    GDK_FEATURE_OFFLOAD,          "Disable graphics offload" },
-  { "color-mgmt", GDK_FEATURE_COLOR_MANAGEMENT, "Disable color management" },
+  { "gl",           GDK_FEATURE_OPENGL,             "Disable OpenGL support" },
+  { "gl-api",       GDK_FEATURE_GL_API,             "Disable non-GLES GL API" },
+  { "gles-api",     GDK_FEATURE_GLES_API,           "Disable GLES GL API" },
+  { "egl",          GDK_FEATURE_EGL,                "Disable EGL" },
+  { "glx",          GDK_FEATURE_GLX,                "Disable GLX" },
+  { "wgl",          GDK_FEATURE_WGL,                "Disable WGL" },
+  { "vulkan",       GDK_FEATURE_VULKAN,             "Disable Vulkan support" },
+  { "dmabuf",       GDK_FEATURE_DMABUF,             "Disable dmabuf support" },
+  { "offload",      GDK_FEATURE_OFFLOAD,            "Disable graphics offload" },
+  { "color-mgmt",   GDK_FEATURE_COLOR_MANAGEMENT,   "Disable color management" },
+  { "session-mgmt", GDK_FEATURE_SESSION_MANAGEMENT, "Disable session management" },
 };
 
 
