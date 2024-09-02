@@ -700,6 +700,7 @@ add_wayland_protocols (GdkDisplay          *display,
       append_wayland_protocol_row (gen, (struct wl_proxy *)d->single_pixel_buffer);
       if (d->color)
         append_wayland_protocol_row (gen, gdk_wayland_color_get_color_manager (d->color));
+      append_wayland_protocol_row (gen, (struct wl_proxy *)d->xdg_session_manager);
     }
 }
 #endif
