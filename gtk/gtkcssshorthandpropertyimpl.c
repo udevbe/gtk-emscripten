@@ -679,20 +679,20 @@ parse_transition_timing_function (GtkCssParser *parser,
   return *value != NULL;
 }
 
-static void
+static gboolean
 _gtk_css_ease_value_can_parse_adapter (GtkCssParser *parser,
                                        gpointer      option_data,
                                        gpointer      user_data)
 {
-  _gtk_css_ease_value_can_parse (parser);
+  return _gtk_css_ease_value_can_parse (parser);
 }
 
-static void
+static gboolean
 gtk_css_number_value_can_parse_adapter (GtkCssParser *parser,
                                         gpointer      option_data,
                                         gpointer      user_data)
 {
-  gtk_css_number_value_can_parse (parser);
+  return gtk_css_number_value_can_parse (parser);
 }
 
 static gboolean

@@ -434,20 +434,20 @@ parse_color (GtkCssParser *parser,
   return TRUE;
 }
 
-static void
+static gboolean
 gtk_css_number_value_can_parse_adapter (GtkCssParser *parser,
                                         gpointer      option_data,
                                         gpointer      user_data)
 {
-  gtk_css_number_value_can_parse (parser);
+  return gtk_css_number_value_can_parse (parser);
 }
 
-static void
+static gboolean
 gtk_css_color_value_can_parse_adapter (GtkCssParser *parser,
                                        gpointer      option_data,
                                        gpointer      user_data)
 {
-  gtk_css_color_value_can_parse (parser);
+  return gtk_css_color_value_can_parse (parser);
 }
 
 
