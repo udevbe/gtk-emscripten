@@ -200,6 +200,11 @@ check_functions = [
 ]
 
 foreach func : check_functions
+  # emscripten falsely reports support at compile time but fails at runtime
+  if func == 'getresuid'
+    continue
+  endif
+
   if cc.has_function(func,
                      args: '-D_GNU_SOURCE',
                      prefix:
@@ -757,7 +762,7 @@ subdir('modules')
 if get_option('demos')
   subdir('demos')
 endif
-subdir('tools')
+
 if get_option('build-tests')
   subdir('tests')
 endif

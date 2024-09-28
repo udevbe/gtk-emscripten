@@ -1157,9 +1157,10 @@ libgtk_static = static_library('gtk',
   include_directories: [confinc, gdkinc, gskinc, gtkinc],
   dependencies: gtk_deps + [libgtk_css_dep, libgdk_dep, libgsk_dep],
   link_with: [libgtk_css, libgdk, libgsk ],
+  pic: true,
 )
 
-libgtk = shared_library('gtk-4',
+libgtk = library('gtk-4',
   c_args: gtk_cargs + common_cflags,
   include_directories: [confinc, gdkinc, gskinc, gtkinc],
   dependencies: gtk_deps + [libgtk_css_dep, libgdk_dep, libgsk_dep],

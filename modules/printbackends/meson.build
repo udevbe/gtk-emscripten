@@ -45,14 +45,14 @@ elif cups_dep.found()
 endif
 
 # The 'file' print backend cannot be disabled
-print_backends += 'file'
-shared_module('printbackend-file',
-  sources: 'gtkprintbackendfile.c',
-  c_args: printbackends_args,
-  dependencies: libgtk_dep,
-  name_suffix: module_suffix,
-  install_dir: printbackends_install_dir,
-  install: true,
-)
+#print_backends += 'file'
+#shared_module('printbackend-file',
+#  sources: 'gtkprintbackendfile.c',
+#  c_args: printbackends_args,
+#  dependencies: libgtk_dep,
+#  name_suffix: module_suffix,
+#  install_dir: printbackends_install_dir,
+#  install: true,
+#)
 
 cdata.set_quoted('GTK_PRINT_BACKENDS', ','.join(print_backends))

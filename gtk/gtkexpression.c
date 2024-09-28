@@ -453,7 +453,7 @@ gtk_value_dup_expression (const GValue *value)
 }
 
 static void
-param_expression_init (GParamSpec *pspec)
+param_expression_init (GParamSpec *pspec, gpointer user_data)
 {
 }
 
