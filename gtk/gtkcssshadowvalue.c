@@ -434,6 +434,23 @@ parse_color (GtkCssParser *parser,
   return TRUE;
 }
 
+static void
+gtk_css_number_value_can_parse_adapter (GtkCssParser *parser,
+                                        gpointer      option_data,
+                                        gpointer      user_data)
+{
+  gtk_css_number_value_can_parse (parser);
+}
+
+static void
+gtk_css_color_value_can_parse_adapter (GtkCssParser *parser,
+                                       gpointer      option_data,
+                                       gpointer      user_data)
+{
+  gtk_css_color_value_can_parse (parser);
+}
+
+
 static gboolean
 gtk_css_shadow_value_parse_one (GtkCssParser *parser,
                                 gboolean      box_shadow_mode,
@@ -444,9 +461,9 @@ gtk_css_shadow_value_parse_one (GtkCssParser *parser,
   gboolean inset = FALSE;
   GtkCssParseOption options[] =
     {
-      { (void *) gtk_css_number_value_can_parse, parse_lengths, values },
+      { (void *) gtk_css_number_value_can_parse_adapter, parse_lengths, values },
       { has_inset, parse_inset, &inset },
-      { (void *) gtk_css_color_value_can_parse, parse_color, &color },
+      { (void *) gtk_css_color_value_can_parse_adapter, parse_color, &color },
     };
   guint i;
 

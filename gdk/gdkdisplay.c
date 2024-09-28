@@ -186,6 +186,12 @@ gdk_display_real_get_default_seat (GdkDisplay *display)
 }
 
 static void
+gdk_display_opened_adapter (GdkDisplay *display, gpointer user_data)
+{
+  GDK_DISPLAY_GET_CLASS (display)->opened(display);
+}
+
+static void
 gdk_display_real_opened (GdkDisplay *display)
 {
   _gdk_display_manager_add_display (gdk_display_manager_get (), display);
@@ -246,13 +252,9 @@ gdk_display_class_init (GdkDisplayClass *class)
    * Emitted when the connection to the windowing system for @display is opened.
    */
   signals[OPENED] =
-    g_signal_new (g_intern_static_string ("opened"),
-		  G_OBJECT_CLASS_TYPE (object_class),
-                  G_SIGNAL_RUN_LAST,
-		  G_STRUCT_OFFSET (GdkDisplayClass, opened),
-                  NULL, NULL,
-                  NULL,
-                  G_TYPE_NONE, 0);
+      g_signal_new_class_handler (g_intern_static_string ("opened"), G_OBJECT_CLASS_TYPE (object_class), G_SIGNAL_RUN_LAST,
+                                  G_CALLBACK (gdk_display_opened_adapter),
+                                  NULL, NULL, NULL, G_TYPE_NONE, 0);
 
   /**
    * GdkDisplay::closed:

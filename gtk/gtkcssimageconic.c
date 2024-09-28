@@ -126,6 +126,22 @@ parse_color (GtkCssParser *parser,
   return TRUE;
 }
 
+static void
+gtk_css_number_value_can_parse_adapter (GtkCssParser *parser,
+                                        gpointer      option_data,
+                                        gpointer      user_data)
+{
+  gtk_css_number_value_can_parse (parser);
+}
+
+static void
+gtk_css_color_value_can_parse_adapter (GtkCssParser *parser,
+                                       gpointer      option_data,
+                                       gpointer      user_data)
+{
+  gtk_css_color_value_can_parse (parser);
+}
+
 static guint
 gtk_css_image_conic_parse_color_stop (GtkCssImageConic *self,
                                       GtkCssParser      *parser,
@@ -135,8 +151,8 @@ gtk_css_image_conic_parse_color_stop (GtkCssImageConic *self,
   GtkCssValue *color = NULL;
   GtkCssParseOption options[] =
     {
-      { (void *) gtk_css_number_value_can_parse, parse_angles, &angles },
-      { (void *) gtk_css_color_value_can_parse, parse_color, &color },
+      { (void *) gtk_css_number_value_can_parse_adapter, parse_angles, &angles },
+      { (void *) gtk_css_color_value_can_parse_adapter, parse_color, &color },
     };
 
   if (!gtk_css_parser_consume_any (parser, options, G_N_ELEMENTS (options), NULL))
