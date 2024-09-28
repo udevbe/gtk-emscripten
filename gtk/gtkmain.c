@@ -516,15 +516,15 @@ gettext_initialization (void)
 }
 
 static void
-default_display_notify_cb_adapter (GdkDisplayManager *dm, gpointer user_data0, gpointer user_data1)
-{
-  default_display_notify_cb (dm);
-}
-
-static void
 default_display_notify_cb (GdkDisplayManager *dm, GdkDisplay *display)
 {
   debug_flags[0].display = gdk_display_get_default ();
+}
+
+static void
+default_display_notify_cb_adapter (GdkDisplayManager *dm, gpointer user_data0, gpointer user_data1)
+{
+  default_display_notify_cb (dm);
 }
 
 static void
