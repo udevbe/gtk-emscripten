@@ -265,6 +265,13 @@ _gtk_style_cascade_new (void)
   return g_object_new (GTK_TYPE_STYLE_CASCADE, NULL);
 }
 
+
+void
+gtk_style_provider_changed0 (GtkStyleProvider *provider, gpointer user_data)
+{
+  gtk_style_provider_changed (provider);
+}
+
 void
 _gtk_style_cascade_set_parent (GtkStyleCascade *cascade,
                                GtkStyleCascade *parent)
@@ -280,7 +287,7 @@ _gtk_style_cascade_set_parent (GtkStyleCascade *cascade,
       g_object_ref (parent);
       g_signal_connect_swapped (parent,
                                 "gtk-private-changed",
-                                G_CALLBACK (gtk_style_provider_changed),
+                                G_CALLBACK (gtk_style_provider_changed0),
                                 cascade);
     }
 
@@ -311,7 +318,7 @@ _gtk_style_cascade_add_provider (GtkStyleCascade  *cascade,
   data.priority = priority;
   data.changed_signal_id = g_signal_connect_swapped (provider,
                                                      "gtk-private-changed",
-                                                     G_CALLBACK (gtk_style_provider_changed),
+                                                     G_CALLBACK (gtk_style_provider_changed0),
                                                      cascade);
 
   /* ensure it gets removed first */

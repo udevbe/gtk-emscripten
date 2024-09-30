@@ -46,16 +46,24 @@ G_DEFINE_INTERFACE (GtkStyleProvider, gtk_style_provider, G_TYPE_OBJECT)
 static guint signals[LAST_SIGNAL];
 
 static void
+gtk_style_provider_changed_adapter (GtkStyleProvider *provider, gpointer user_data)
+{
+  if(GTK_STYLE_PROVIDER_GET_INTERFACE(provider)->changed)
+    {
+      GTK_STYLE_PROVIDER_GET_INTERFACE(provider)->changed(provider);
+    }
+}
+
+static void
 gtk_style_provider_default_init (GtkStyleProviderInterface *iface)
 {
-  signals[CHANGED] = g_signal_new (I_("gtk-private-changed"),
+  signals[CHANGED] = g_signal_new_class_handler (I_("gtk-private-changed"),
                                    G_TYPE_FROM_INTERFACE (iface),
                                    G_SIGNAL_RUN_LAST,
-                                   G_STRUCT_OFFSET (GtkStyleProviderInterface, changed),
+                                   G_CALLBACK (gtk_style_provider_changed_adapter),
                                    NULL, NULL,
                                    NULL,
                                    G_TYPE_NONE, 0);
-
 }
 
 GtkCssValue *
