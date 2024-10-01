@@ -1168,6 +1168,42 @@ gtk_widget_get_property (GObject    *object,
 }
 
 static void
+gtk_widget_show_adapter (GtkWidget *widget, gpointer user_data)
+{
+  GTK_WIDGET_GET_CLASS (widget)->show(widget);
+}
+
+static void
+gtk_widget_hide_adapter (GtkWidget *widget, gpointer user_data)
+{
+  GTK_WIDGET_GET_CLASS (widget)->hide(widget);
+}
+
+static void
+gtk_widget_map_adapter (GtkWidget *widget, gpointer user_data)
+{
+  GTK_WIDGET_GET_CLASS (widget)->map(widget);
+}
+
+static void
+gtk_widget_unmap_adapter (GtkWidget *widget, gpointer user_data)
+{
+  GTK_WIDGET_GET_CLASS (widget)->unmap(widget);
+}
+
+static void
+gtk_widget_realize_adapter (GtkWidget *widget, gpointer user_data)
+{
+  GTK_WIDGET_GET_CLASS (widget)->realize(widget);
+}
+
+static void
+gtk_widget_unrealize_adapter (GtkWidget *widget, gpointer user_data)
+{
+  GTK_WIDGET_GET_CLASS (widget)->unrealize(widget);
+}
+
+static void
 gtk_widget_class_init (GtkWidgetClass *klass, gpointer class_data)
 {
   GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
@@ -1666,13 +1702,13 @@ gtk_widget_class_init (GtkWidgetClass *klass, gpointer class_data)
    * Emitted when @widget is shown.
    */
   widget_signals[SHOW] =
-    g_signal_new (I_("show"),
-                  G_TYPE_FROM_CLASS (gobject_class),
-                  G_SIGNAL_RUN_FIRST,
-                  G_STRUCT_OFFSET (GtkWidgetClass, show),
-                  NULL, NULL,
-                  NULL,
-                  G_TYPE_NONE, 0);
+    g_signal_new_class_handler (I_("show"),
+                                G_TYPE_FROM_CLASS (gobject_class),
+                                G_SIGNAL_RUN_FIRST,
+                                G_CALLBACK (gtk_widget_show_adapter),
+                                NULL, NULL,
+                                NULL,
+                                G_TYPE_NONE, 0);
 
   /**
    * GtkWidget::hide:
@@ -1681,13 +1717,13 @@ gtk_widget_class_init (GtkWidgetClass *klass, gpointer class_data)
    * Emitted when @widget is hidden.
    */
   widget_signals[HIDE] =
-    g_signal_new (I_("hide"),
-                  G_TYPE_FROM_CLASS (gobject_class),
-                  G_SIGNAL_RUN_FIRST,
-                  G_STRUCT_OFFSET (GtkWidgetClass, hide),
-                  NULL, NULL,
-                  NULL,
-                  G_TYPE_NONE, 0);
+      g_signal_new_class_handler (I_("hide"),
+                                  G_TYPE_FROM_CLASS (gobject_class),
+                                  G_SIGNAL_RUN_FIRST,
+                                  G_CALLBACK (gtk_widget_hide_adapter),
+                                  NULL, NULL,
+                                  NULL,
+                                  G_TYPE_NONE, 0);
 
   /**
    * GtkWidget::map:
@@ -1704,13 +1740,13 @@ gtk_widget_class_init (GtkWidgetClass *klass, gpointer class_data)
    * emission of [signal@Gtk.Widget::unmap].
    */
   widget_signals[MAP] =
-    g_signal_new (I_("map"),
-                  G_TYPE_FROM_CLASS (gobject_class),
-                  G_SIGNAL_RUN_FIRST,
-                  G_STRUCT_OFFSET (GtkWidgetClass, map),
-                  NULL, NULL,
-                  NULL,
-                  G_TYPE_NONE, 0);
+      g_signal_new_class_handler (I_("map"),
+                                  G_TYPE_FROM_CLASS (gobject_class),
+                                  G_SIGNAL_RUN_FIRST,
+                                  G_CALLBACK (gtk_widget_map_adapter),
+                                  NULL, NULL,
+                                  NULL,
+                                  G_TYPE_NONE, 0);
 
   /**
    * GtkWidget::unmap:
@@ -1725,13 +1761,13 @@ gtk_widget_class_init (GtkWidgetClass *klass, gpointer class_data)
    * it can be used to, for example, stop an animation on the widget.
    */
   widget_signals[UNMAP] =
-    g_signal_new (I_("unmap"),
-                  G_TYPE_FROM_CLASS (gobject_class),
-                  G_SIGNAL_RUN_FIRST,
-                  G_STRUCT_OFFSET (GtkWidgetClass, unmap),
-                  NULL, NULL,
-                  NULL,
-                  G_TYPE_NONE, 0);
+      g_signal_new_class_handler (I_("unmap"),
+                                  G_TYPE_FROM_CLASS (gobject_class),
+                                  G_SIGNAL_RUN_FIRST,
+                                  G_CALLBACK (gtk_widget_unmap_adapter),
+                                  NULL, NULL,
+                                  NULL,
+                                  G_TYPE_NONE, 0);
 
   /**
    * GtkWidget::realize:
@@ -1743,13 +1779,13 @@ gtk_widget_class_init (GtkWidgetClass *klass, gpointer class_data)
    * or the widget has been mapped (that is, it is going to be drawn).
    */
   widget_signals[REALIZE] =
-    g_signal_new (I_("realize"),
-                  G_TYPE_FROM_CLASS (gobject_class),
-                  G_SIGNAL_RUN_FIRST,
-                  G_STRUCT_OFFSET (GtkWidgetClass, realize),
-                  NULL, NULL,
-                  NULL,
-                  G_TYPE_NONE, 0);
+      g_signal_new_class_handler (I_("realize"),
+                                  G_TYPE_FROM_CLASS (gobject_class),
+                                  G_SIGNAL_RUN_FIRST,
+                                  G_CALLBACK (gtk_widget_realize_adapter),
+                                  NULL, NULL,
+                                  NULL,
+                                  G_TYPE_NONE, 0);
 
   /**
    * GtkWidget::unrealize:
@@ -1761,13 +1797,13 @@ gtk_widget_class_init (GtkWidgetClass *klass, gpointer class_data)
    * or the widget has been unmapped (that is, it is going to be hidden).
    */
   widget_signals[UNREALIZE] =
-    g_signal_new (I_("unrealize"),
-                  G_TYPE_FROM_CLASS (gobject_class),
-                  G_SIGNAL_RUN_LAST,
-                  G_STRUCT_OFFSET (GtkWidgetClass, unrealize),
-                  NULL, NULL,
-                  NULL,
-                  G_TYPE_NONE, 0);
+      g_signal_new_class_handler (I_("unrealize"),
+                                  G_TYPE_FROM_CLASS (gobject_class),
+                                  G_SIGNAL_RUN_FIRST,
+                                  G_CALLBACK (gtk_widget_unrealize_adapter),
+                                  NULL, NULL,
+                                  NULL,
+                                  G_TYPE_NONE, 0);
 
   /**
    * GtkWidget::state-flags-changed:
