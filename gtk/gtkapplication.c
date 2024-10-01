@@ -510,6 +510,22 @@ gtk_application_dbus_unregister (GApplication     *application,
 }
 
 static void
+gtk_application_window_added_adapter (GtkApplication *application,
+                                      GtkWindow      *window,
+                                      gpointer        user_data)
+{
+  GTK_APPLICATION_GET_CLASS (application)->window_added(application, window);
+}
+
+static void
+gtk_application_window_removed_adapter (GtkApplication *application,
+                                        GtkWindow      *window,
+                                        gpointer        user_data)
+{
+  GTK_APPLICATION_GET_CLASS (application)->window_removed(application, window);
+}
+
+static void
 gtk_application_class_init (GtkApplicationClass *class)
 {
   GObjectClass *object_class = G_OBJECT_CLASS (class);
@@ -540,11 +556,11 @@ gtk_application_class_init (GtkApplicationClass *class)
    * [method@Gtk.Application.add_window].
    */
   gtk_application_signals[WINDOW_ADDED] =
-    g_signal_new (I_("window-added"), GTK_TYPE_APPLICATION, G_SIGNAL_RUN_FIRST,
-                  G_STRUCT_OFFSET (GtkApplicationClass, window_added),
-                  NULL, NULL,
-                  NULL,
-                  G_TYPE_NONE, 1, GTK_TYPE_WINDOW);
+    g_signal_new_class_handler (I_("window-added"), GTK_TYPE_APPLICATION, G_SIGNAL_RUN_FIRST,
+                                G_CALLBACK (gtk_application_window_added_adapter),
+                                NULL, NULL,
+                                NULL,
+                                G_TYPE_NONE, 1, GTK_TYPE_WINDOW);
 
   /**
    * GtkApplication::window-removed:
@@ -557,11 +573,11 @@ gtk_application_class_init (GtkApplicationClass *class)
    * or explicitly through [method@Gtk.Application.remove_window].
    */
   gtk_application_signals[WINDOW_REMOVED] =
-    g_signal_new (I_("window-removed"), GTK_TYPE_APPLICATION, G_SIGNAL_RUN_FIRST,
-                  G_STRUCT_OFFSET (GtkApplicationClass, window_removed),
-                  NULL, NULL,
-                  NULL,
-                  G_TYPE_NONE, 1, GTK_TYPE_WINDOW);
+      g_signal_new_class_handler (I_("window-removed"), GTK_TYPE_APPLICATION, G_SIGNAL_RUN_FIRST,
+                                  G_CALLBACK (gtk_application_window_removed_adapter),
+                                  NULL, NULL,
+                                  NULL,
+                                  G_TYPE_NONE, 1, GTK_TYPE_WINDOW);
 
   /**
    * GtkApplication::query-end:
