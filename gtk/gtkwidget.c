@@ -771,12 +771,18 @@ gtk_widget_real_contains (GtkWidget *widget,
 }
 
 static void
+gtk_widget_root_adapter(GtkWidget *widget, gpointer user_data)
+{
+  gtk_widget_root(widget);
+}
+
+static void
 gtk_widget_real_root (GtkWidget *widget)
 {
   GtkWidgetPrivate *priv = gtk_widget_get_instance_private (widget);
   GList *l;
 
-  gtk_widget_forall (widget, (GtkCallback) gtk_widget_root, NULL);
+  gtk_widget_forall (widget, (GtkCallback) gtk_widget_root_adapter, NULL);
 
   for (l = priv->event_controllers; l; l = l->next)
     {

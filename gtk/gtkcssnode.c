@@ -542,6 +542,14 @@ gtk_css_node_real_style_changed (GtkCssNode        *cssnode,
 }
 
 static void
+gtk_css_node_style_changed_adapter (GtkCssNode        *cssnode,
+                                    GtkCssStyleChange *change,
+                                    gpointer           user_data)
+{
+  GTK_CSS_NODE_GET_CLASS (cssnode)->style_changed(cssnode, change);
+}
+
+static void
 gtk_css_node_class_init (GtkCssNodeClass *klass)
 {
   GObjectClass *object_class = G_OBJECT_CLASS (klass);
@@ -563,14 +571,14 @@ gtk_css_node_class_init (GtkCssNodeClass *klass)
   klass->style_changed = gtk_css_node_real_style_changed;
 
   cssnode_signals[STYLE_CHANGED] =
-    g_signal_new (I_("style-changed"),
-		  G_TYPE_FROM_CLASS (object_class),
-		  G_SIGNAL_RUN_LAST,
-                  G_STRUCT_OFFSET (GtkCssNodeClass, style_changed),
-		  NULL, NULL,
-		  NULL,
-		  G_TYPE_NONE, 1,
-		  G_TYPE_POINTER);
+    g_signal_new_class_handler (I_("style-changed"),
+                                G_TYPE_FROM_CLASS (object_class),
+                                G_SIGNAL_RUN_LAST,
+                                G_CALLBACK (gtk_css_node_style_changed_adapter),
+                                NULL, NULL,
+                                NULL,
+                                G_TYPE_NONE, 1,
+                                G_TYPE_POINTER);
 
   cssnode_properties[PROP_CLASSES] =
     g_param_spec_boxed ("classes", NULL, NULL,
