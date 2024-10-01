@@ -1210,6 +1210,31 @@ gtk_widget_unrealize_adapter (GtkWidget *widget, gpointer user_data)
 }
 
 static void
+gtk_widget_state_flags_changed_adapter (GtkWidget     *widget,
+                                        GtkStateFlags  old_state,
+                                        gpointer       user_data)
+{
+  GTK_WIDGET_GET_CLASS (widget)->state_flags_changed(widget, old_state);
+}
+
+static void
+gtk_widget_direction_changed_adapter (GtkWidget        *widget,
+                                      GtkTextDirection  previous_direction,
+                                      gpointer          user_data)
+{
+  GTK_WIDGET_GET_CLASS (widget)->direction_changed(widget, previous_direction);
+}
+
+static void
+gtk_widget_move_focus_adapter (GtkWidget        *widget,
+                               GtkDirectionType  direction,
+                               gpointer          user_data)
+{
+  GTK_WIDGET_GET_CLASS (widget)->move_focus(widget, direction);
+}
+
+
+static void
 gtk_widget_class_init (GtkWidgetClass *klass, gpointer class_data)
 {
   GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
@@ -1821,14 +1846,14 @@ gtk_widget_class_init (GtkWidgetClass *klass, gpointer class_data)
    * See [method@Gtk.Widget.get_state_flags].
    */
   widget_signals[STATE_FLAGS_CHANGED] =
-    g_signal_new (I_("state-flags-changed"),
-                  G_TYPE_FROM_CLASS (gobject_class),
-                  G_SIGNAL_RUN_FIRST,
-                  G_STRUCT_OFFSET (GtkWidgetClass, state_flags_changed),
-                  NULL, NULL,
-                  NULL,
-                  G_TYPE_NONE, 1,
-                  GTK_TYPE_STATE_FLAGS);
+      g_signal_new_class_handler (I_("state-flags-changed"),
+                                  G_TYPE_FROM_CLASS (gobject_class),
+                                  G_SIGNAL_RUN_FIRST,
+                                  G_CALLBACK (gtk_widget_state_flags_changed_adapter),
+                                  NULL, NULL,
+                                  NULL,
+                                  G_TYPE_NONE, 1,
+                                  GTK_TYPE_STATE_FLAGS);
 
   /**
    * GtkWidget::direction-changed:
@@ -1838,14 +1863,14 @@ gtk_widget_class_init (GtkWidgetClass *klass, gpointer class_data)
    * Emitted when the text direction of a widget changes.
    */
   widget_signals[DIRECTION_CHANGED] =
-    g_signal_new (I_("direction-changed"),
-                  G_TYPE_FROM_CLASS (gobject_class),
-                  G_SIGNAL_RUN_FIRST,
-                  G_STRUCT_OFFSET (GtkWidgetClass, direction_changed),
-                  NULL, NULL,
-                  NULL,
-                  G_TYPE_NONE, 1,
-                  GTK_TYPE_TEXT_DIRECTION);
+    g_signal_new_class_handler (I_("direction-changed"),
+                                G_TYPE_FROM_CLASS (gobject_class),
+                                G_SIGNAL_RUN_FIRST,
+                                G_CALLBACK (gtk_widget_direction_changed_adapter),
+                                NULL, NULL,
+                                NULL,
+                                G_TYPE_NONE, 1,
+                                GTK_TYPE_TEXT_DIRECTION);
 
   /**
    * GtkWidget::mnemonic-activate:
@@ -1862,13 +1887,13 @@ gtk_widget_class_init (GtkWidgetClass *klass, gpointer class_data)
    */
   widget_signals[MNEMONIC_ACTIVATE] =
     g_signal_new (I_("mnemonic-activate"),
-                  G_TYPE_FROM_CLASS (gobject_class),
-                  G_SIGNAL_RUN_LAST,
-                  G_STRUCT_OFFSET (GtkWidgetClass, mnemonic_activate),
-                  _gtk_boolean_handled_accumulator, NULL,
-                  _gtk_marshal_BOOLEAN__BOOLEAN,
-                  G_TYPE_BOOLEAN, 1,
-                  G_TYPE_BOOLEAN);
+                                G_TYPE_FROM_CLASS (gobject_class),
+                                G_SIGNAL_RUN_LAST,
+                                G_STRUCT_OFFSET (GtkWidgetClass, mnemonic_activate),
+                                _gtk_boolean_handled_accumulator, NULL,
+                                _gtk_marshal_BOOLEAN__BOOLEAN,
+                                G_TYPE_BOOLEAN, 1,
+                                G_TYPE_BOOLEAN);
   g_signal_set_va_marshaller (widget_signals[MNEMONIC_ACTIVATE],
                               G_TYPE_FROM_CLASS (gobject_class),
                               _gtk_marshal_BOOLEAN__BOOLEANv);
@@ -1886,15 +1911,15 @@ gtk_widget_class_init (GtkWidgetClass *klass, gpointer class_data)
    * and <kbd>Shift</kbd>+<kbd>Tab</kbd> to move backward.
    */
   widget_signals[MOVE_FOCUS] =
-    g_signal_new (I_("move-focus"),
-                  G_TYPE_FROM_CLASS (klass),
-                  G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION,
-                  G_STRUCT_OFFSET (GtkWidgetClass, move_focus),
-                  NULL, NULL,
-                  NULL,
-                  G_TYPE_NONE,
-                  1,
-                  GTK_TYPE_DIRECTION_TYPE);
+    g_signal_new_class_handler (I_("move-focus"),
+                                G_TYPE_FROM_CLASS (klass),
+                                G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION,
+                                G_CALLBACK (gtk_widget_move_focus_adapter),
+                                NULL, NULL,
+                                NULL,
+                                G_TYPE_NONE,
+                                1,
+                                GTK_TYPE_DIRECTION_TYPE);
 
   /**
    * GtkWidget::keynav-failed:
