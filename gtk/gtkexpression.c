@@ -588,7 +588,7 @@ gtk_expression_watch_size (GtkExpression *self)
 }
 
 static void
-gtk_expression_class_init (GtkExpressionClass *klass)
+gtk_expression_class_init (GtkExpressionClass *klass, gpointer class_data)
 {
   klass->finalize = gtk_expression_real_finalize;
   klass->watch_size = gtk_expression_real_watch_size;

@@ -559,7 +559,7 @@ typedef struct
 
 
 static void     gtk_widget_base_class_init                      (gpointer            g_class);
-static void     gtk_widget_class_init                           (GtkWidgetClass     *klass);
+static void     gtk_widget_class_init                           (GtkWidgetClass     *klass, gpointer class_data);
 static void     gtk_widget_base_class_finalize                  (GtkWidgetClass     *klass);
 static void     gtk_widget_init                                 (GTypeInstance      *instance,
                                                                  gpointer            g_class);
@@ -1168,7 +1168,7 @@ gtk_widget_get_property (GObject    *object,
 }
 
 static void
-gtk_widget_class_init (GtkWidgetClass *klass)
+gtk_widget_class_init (GtkWidgetClass *klass, gpointer class_data)
 {
   GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
 

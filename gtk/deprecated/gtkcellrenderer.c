@@ -77,7 +77,7 @@ G_GNUC_BEGIN_IGNORE_DEPRECATIONS
 #define DEBUG_CELL_SIZE_REQUEST 0
 
 static void gtk_cell_renderer_init          (GtkCellRenderer      *cell);
-static void gtk_cell_renderer_class_init    (GtkCellRendererClass *class);
+static void gtk_cell_renderer_class_init    (GtkCellRendererClass *class, gpointer class_data);
 static void gtk_cell_renderer_get_property  (GObject              *object,
 					     guint                 param_id,
 					     GValue               *value,
@@ -195,7 +195,7 @@ gtk_cell_renderer_init (GtkCellRenderer *cell)
 }
 
 static void
-gtk_cell_renderer_class_init (GtkCellRendererClass *class)
+gtk_cell_renderer_class_init (GtkCellRendererClass *class, gpointer class_data)
 {
   GObjectClass *object_class = G_OBJECT_CLASS (class);
 
