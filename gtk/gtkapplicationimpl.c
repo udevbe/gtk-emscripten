@@ -44,7 +44,6 @@ static void startup_do_nothing (GtkApplicationImpl *arg0, gboolean arg1) {}
 static void shutdown_do_nothing (GtkApplicationImpl *arg0) {}
 static void before_emit_do_nothing (GtkApplicationImpl *arg0, GVariant *arg1) {}
 static void window_added_do_nothing (GtkApplicationImpl *arg0, GtkWindow *arg1) {}
-static void window_added_do_nothing (GtkApplicationImpl *arg0, GtkWindow *arg1) {}
 static void window_removed_do_nothing (GtkApplicationImpl *arg0, GtkWindow *arg1) {}
 static void active_window_changed_do_nothing (GtkApplicationImpl *arg0, GtkWindow *arg1) {}
 static void handle_window_realize_do_nothing (GtkApplicationImpl *arg0, GtkWindow *arg1) {}
