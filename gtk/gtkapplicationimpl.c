@@ -40,26 +40,38 @@ gtk_application_impl_init (GtkApplicationImpl *impl)
 {
 }
 
-static guint do_nothing (void) { return 0; }
-static gboolean return_false (void) { return FALSE; }
+static void startup_do_nothing (GtkApplicationImpl *arg0, gboolean arg1) {}
+static void shutdown_do_nothing (GtkApplicationImpl *arg0) {}
+static void before_emit_do_nothing (GtkApplicationImpl *arg0, GVariant *arg1) {}
+static void window_added_do_nothing (GtkApplicationImpl *arg0, GtkWindow *arg1) {}
+static void window_added_do_nothing (GtkApplicationImpl *arg0, GtkWindow *arg1) {}
+static void window_removed_do_nothing (GtkApplicationImpl *arg0, GtkWindow *arg1) {}
+static void active_window_changed_do_nothing (GtkApplicationImpl *arg0, GtkWindow *arg1) {}
+static void handle_window_realize_do_nothing (GtkApplicationImpl *arg0, GtkWindow *arg1) {}
+static void handle_window_map_do_nothing (GtkApplicationImpl *arg0, GtkWindow *arg1) {}
+static void set_app_menu_do_nothing (GtkApplicationImpl *arg0, GMenuModel *arg1) {}
+static void set_menubar_do_nothing (GtkApplicationImpl *arg0, GMenuModel *arg1) {}
+static gint inhibit_do_nothing (GtkApplicationImpl *arg0, GtkWindow *arg1,GtkApplicationInhibitFlags arg2,const char *arg3) { return 0; }
+static void uninhibit_do_nothing (GtkApplicationImpl *arg0, guint arg1) {}
+static gboolean prefers_app_menu_do_nothing (GtkApplicationImpl *arg0) { return FALSE; }
 
 static void
 gtk_application_impl_class_init (GtkApplicationImplClass *class)
 {
   /* NB: can only 'do_nothing' for functions with integer or void return */
-  class->startup = (gpointer) do_nothing;
-  class->shutdown = (gpointer) do_nothing;
-  class->before_emit = (gpointer) do_nothing;
-  class->window_added = (gpointer) do_nothing;
-  class->window_removed = (gpointer) do_nothing;
-  class->active_window_changed = (gpointer) do_nothing;
-  class->handle_window_realize = (gpointer) do_nothing;
-  class->handle_window_map = (gpointer) do_nothing;
-  class->set_app_menu = (gpointer) do_nothing;
-  class->set_menubar = (gpointer) do_nothing;
-  class->inhibit = (gpointer) do_nothing;
-  class->uninhibit = (gpointer) do_nothing;
-  class->prefers_app_menu = (gpointer) return_false;
+  class->startup = (gpointer) startup_do_nothing;
+  class->shutdown = (gpointer) shutdown_do_nothing;
+  class->before_emit = (gpointer) before_emit_do_nothing;
+  class->window_added = (gpointer) window_added_do_nothing;
+  class->window_removed = (gpointer) window_removed_do_nothing;
+  class->active_window_changed = (gpointer) active_window_changed_do_nothing;
+  class->handle_window_realize = (gpointer) handle_window_realize_do_nothing;
+  class->handle_window_map = (gpointer) handle_window_map_do_nothing;
+  class->set_app_menu = (gpointer) set_app_menu_do_nothing;
+  class->set_menubar = (gpointer) set_menubar_do_nothing;
+  class->inhibit = (gpointer) inhibit_do_nothing;
+  class->uninhibit = (gpointer) uninhibit_do_nothing;
+  class->prefers_app_menu = (gpointer) prefers_app_menu_do_nothing;
 }
 
 void
