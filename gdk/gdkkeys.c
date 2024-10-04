@@ -118,17 +118,26 @@ gdk_keymap_keys_changed (GdkKeymap *keymap)
 
 static void
 gdk_keymap_direction_changed_adapter(GdkKeymap *keymap, gpointer user_data) {
-  GDK_KEYMAP_GET_CLASS (keymap)->direction_changed(keymap);
+  if(GDK_KEYMAP_GET_CLASS (keymap)->direction_changed)
+    {
+      GDK_KEYMAP_GET_CLASS (keymap)->direction_changed(keymap);
+    }
 }
 
 static void
 gdk_keymap_keys_changed_adapter(GdkKeymap *keymap, gpointer user_data) {
-  GDK_KEYMAP_GET_CLASS (keymap)->keys_changed(keymap);
+  if(GDK_KEYMAP_GET_CLASS (keymap)->keys_changed)
+    {
+      GDK_KEYMAP_GET_CLASS (keymap)->keys_changed(keymap);
+    }
 }
 
 static void
 gdk_keymap_state_changed_adapter(GdkKeymap *keymap, gpointer user_data) {
-  GDK_KEYMAP_GET_CLASS (keymap)->state_changed(keymap);
+  if(GDK_KEYMAP_GET_CLASS (keymap)->state_changed)
+    {
+      GDK_KEYMAP_GET_CLASS (keymap)->state_changed(keymap);
+    }
 }
 
 
