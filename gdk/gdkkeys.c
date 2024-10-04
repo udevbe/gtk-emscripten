@@ -117,6 +117,22 @@ gdk_keymap_keys_changed (GdkKeymap *keymap)
 }
 
 static void
+gdk_keymap_direction_changed_adapter(GdkKeymap *keymap, gpointer user_data) {
+  GDK_KEYMAP_GET_CLASS (keymap)->direction_changed(keymap);
+}
+
+static void
+gdk_keymap_keys_changed_adapter(GdkKeymap *keymap, gpointer user_data) {
+  GDK_KEYMAP_GET_CLASS (keymap)->keys_changed(keymap);
+}
+
+static void
+gdk_keymap_state_changed_adapter(GdkKeymap *keymap, gpointer user_data) {
+  GDK_KEYMAP_GET_CLASS (keymap)->state_changed(keymap);
+}
+
+
+static void
 gdk_keymap_class_init (GdkKeymapClass *klass)
 {
   GObjectClass *object_class = G_OBJECT_CLASS (klass);
@@ -143,14 +159,14 @@ gdk_keymap_class_init (GdkKeymapClass *klass)
    * See gdk_keymap_get_direction().
    */
   signals[DIRECTION_CHANGED] =
-    g_signal_new (g_intern_static_string ("direction-changed"),
-		  G_OBJECT_CLASS_TYPE (object_class),
-		  G_SIGNAL_RUN_LAST,
-		  G_STRUCT_OFFSET (GdkKeymapClass, direction_changed),
-		  NULL, NULL,
-		  NULL,
-		  G_TYPE_NONE,
-		  0);
+    g_signal_new_class_handler (g_intern_static_string ("direction-changed"),
+                                G_OBJECT_CLASS_TYPE (object_class),
+                                G_SIGNAL_RUN_LAST,
+                                G_CALLBACK (gdk_keymap_keys_changed_adapter),
+                                NULL, NULL,
+                                NULL,
+                                G_TYPE_NONE,
+                                0);
 
   /**
    * GdkKeymap::keys-changed:
@@ -160,14 +176,14 @@ gdk_keymap_class_init (GdkKeymapClass *klass)
    * @keymap changes.
    */
   signals[KEYS_CHANGED] =
-    g_signal_new (g_intern_static_string ("keys-changed"),
-                  G_OBJECT_CLASS_TYPE (object_class),
-                  G_SIGNAL_RUN_FIRST,
-                  G_STRUCT_OFFSET (GdkKeymapClass, keys_changed),
-                  NULL, NULL,
-                  NULL,
-                  G_TYPE_NONE,
-                  0);
+    g_signal_new_class_handler (g_intern_static_string ("keys-changed"),
+                                G_OBJECT_CLASS_TYPE (object_class),
+                                G_SIGNAL_RUN_FIRST,
+                                G_CALLBACK (gdk_keymap_keys_changed_adapter),
+                                NULL, NULL,
+                                NULL,
+                                G_TYPE_NONE,
+                                0);
 
   /**
    * GdkKeymap::state-changed:
@@ -178,14 +194,14 @@ gdk_keymap_class_init (GdkKeymapClass *klass)
    * See gdk_keymap_get_caps_lock_state().
    */
   signals[STATE_CHANGED] =
-    g_signal_new (g_intern_static_string ("state-changed"),
-                  G_OBJECT_CLASS_TYPE (object_class),
-                  G_SIGNAL_RUN_LAST,
-                  G_STRUCT_OFFSET (GdkKeymapClass, state_changed),
-                  NULL, NULL,
-                  NULL,
-                  G_TYPE_NONE,
-                  0);
+    g_signal_new_class_handler (g_intern_static_string ("state-changed"),
+                                G_OBJECT_CLASS_TYPE (object_class),
+                                G_SIGNAL_RUN_LAST,
+                                G_CALLBACK (gdk_keymap_state_changed_adapter),
+                                NULL, NULL,
+                                NULL,
+                                G_TYPE_NONE,
+                                0);
 }
 
 static void
