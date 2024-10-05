@@ -844,6 +844,12 @@ gtk_popover_key_released (GtkWidget       *widget,
 }
 
 static void
+surface_mapped_changed_adapter (GtkWidget *widget, GParamSpec *pspec, GdkSurface *surface)
+{
+  surface_mapped_changed (widget);
+}
+
+static void
 surface_mapped_changed (GtkWidget *widget)
 {
   GtkPopover *popover = GTK_POPOVER (widget);
@@ -984,7 +990,7 @@ gtk_popover_realize (GtkWidget *widget)
 
   gdk_surface_set_widget (priv->surface, widget);
 
-  g_signal_connect_swapped (priv->surface, "notify::mapped", G_CALLBACK (surface_mapped_changed), widget);
+  g_signal_connect_swapped (priv->surface, "notify::mapped", G_CALLBACK (surface_mapped_changed_adapter), widget);
   g_signal_connect (priv->surface, "render", G_CALLBACK (surface_render), widget);
   g_signal_connect (priv->surface, "event", G_CALLBACK (surface_event), widget);
 

@@ -218,6 +218,12 @@ surface_render (GdkSurface     *surface,
 }
 
 static void
+surface_mapped_changed_adapter (GtkWidget *widget, GParamSpec *pspec, GdkSurface *surface)
+{
+  surface_mapped_changed (widget);
+}
+
+static void
 surface_mapped_changed (GtkWidget *widget)
 {
   GtkTextHandle *handle = GTK_TEXT_HANDLE (widget);
@@ -254,7 +260,7 @@ gtk_text_handle_realize (GtkWidget *widget)
   gdk_surface_set_input_region (handle->surface, cairo_region_create ());
 
   g_signal_connect_swapped (handle->surface, "notify::mapped",
-                            G_CALLBACK (surface_mapped_changed), widget);
+                            G_CALLBACK (surface_mapped_changed_adapter), widget);
   g_signal_connect (handle->surface, "render", G_CALLBACK (surface_render), widget);
 
   GTK_WIDGET_CLASS (gtk_text_handle_parent_class)->realize (widget);

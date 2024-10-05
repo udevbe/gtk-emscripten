@@ -4330,8 +4330,8 @@ gtk_window_realize (GtkWidget *widget)
   if (priv->renderer == NULL)
     priv->renderer = gsk_renderer_new_for_surface (surface);
 
-  g_signal_connect_swapped (surface, "notify::state", G_CALLBACK (surface_state_changed), widget);
-  g_signal_connect_swapped (surface, "notify::mapped", G_CALLBACK (surface_state_changed), widget);
+  g_signal_connect_swapped (surface, "notify::state", G_CALLBACK (surface_state_changed_adapter), widget);
+  g_signal_connect_swapped (surface, "notify::mapped", G_CALLBACK (surface_state_changed_adapter), widget);
   g_signal_connect (surface, "render", G_CALLBACK (surface_render), widget);
   g_signal_connect (surface, "event", G_CALLBACK (surface_event), widget);
   g_signal_connect (surface, "compute-size", G_CALLBACK (toplevel_compute_size), widget);
@@ -4623,6 +4623,12 @@ update_edge_constraints (GtkWindow      *window,
                            (state & GDK_TOPLEVEL_STATE_LEFT_RESIZABLE);
 
   priv->tiled = (state & GDK_TOPLEVEL_STATE_TILED) ? 1 : 0;
+}
+
+static void
+surface_state_changed_adapter (GtkWidget *widget, GParamSpec *pspec, GdkSurface *surface)
+{
+  surface_state_changed (widget);
 }
 
 static void
