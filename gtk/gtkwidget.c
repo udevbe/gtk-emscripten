@@ -771,7 +771,7 @@ gtk_widget_real_contains (GtkWidget *widget,
 }
 
 static void
-gtk_widget_root_adapter(GtkWidget *widget, gpointer user_data)
+gtk_widget_root_adapter (GtkWidget *widget, gpointer user_data)
 {
   gtk_widget_root(widget);
 }

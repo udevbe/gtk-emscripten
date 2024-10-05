@@ -218,17 +218,17 @@ surface_render (GdkSurface     *surface,
 }
 
 static void
-surface_mapped_changed_adapter (GtkWidget *widget, GParamSpec *pspec, GdkSurface *surface)
-{
-  surface_mapped_changed (widget);
-}
-
-static void
 surface_mapped_changed (GtkWidget *widget)
 {
   GtkTextHandle *handle = GTK_TEXT_HANDLE (widget);
 
   gtk_widget_set_visible (widget, gdk_surface_get_mapped (handle->surface));
+}
+
+static void
+surface_mapped_changed_adapter (GtkWidget *widget, GParamSpec *pspec, GdkSurface *surface)
+{
+  surface_mapped_changed (widget);
 }
 
 static void

@@ -844,18 +844,18 @@ gtk_popover_key_released (GtkWidget       *widget,
 }
 
 static void
-surface_mapped_changed_adapter (GtkWidget *widget, GParamSpec *pspec, GdkSurface *surface)
-{
-  surface_mapped_changed (widget);
-}
-
-static void
 surface_mapped_changed (GtkWidget *widget)
 {
   GtkPopover *popover = GTK_POPOVER (widget);
   GtkPopoverPrivate *priv = gtk_popover_get_instance_private (popover);
 
   gtk_widget_set_visible (widget, gdk_surface_get_mapped (priv->surface));
+}
+
+static void
+surface_mapped_changed_adapter (GtkWidget *widget, GParamSpec *pspec, GdkSurface *surface)
+{
+  surface_mapped_changed (widget);
 }
 
 static gboolean

@@ -4626,12 +4626,6 @@ update_edge_constraints (GtkWindow      *window,
 }
 
 static void
-surface_state_changed_adapter (GtkWidget *widget, GParamSpec *pspec, GdkSurface *surface)
-{
-  surface_state_changed (widget);
-}
-
-static void
 surface_state_changed (GtkWidget *widget)
 {
   GtkWindow *window = GTK_WINDOW (widget);
@@ -4682,6 +4676,12 @@ surface_state_changed (GtkWidget *widget)
       update_window_actions (window);
       gtk_widget_queue_resize (widget);
     }
+}
+
+static void
+surface_state_changed_adapter (GtkWidget *widget, GParamSpec *pspec, GdkSurface *surface)
+{
+  surface_state_changed (widget);
 }
 
 static void
