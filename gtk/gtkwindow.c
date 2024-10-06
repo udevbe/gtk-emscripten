@@ -1646,12 +1646,27 @@ gtk_window_accept_rootwindow_drop (GtkDropTargetAsync *self,
   return TRUE;
 }
 
-static void
+static gboolean
 gtk_window_handle_focus_adapter( GtkWidget *widget,
                                  GdkEvent  *event,
                                  gpointer user_data)
 {
-  gtk_window_handle_focus (widget, event, NULL, NULL);
+  return gtk_window_handle_focus (widget, event, 0.0f, 0.0f);
+}
+
+static void
+gtk_window_capture_motion_adapter (GtkWidget *widget,
+                                   double     x,
+                                   double     y,
+                                   gpointer   user_data)
+{
+  gtk_window_capture_motion (widget, x, y);
+}
+
+static void
+gtk_window_capture_leave_adapter (GtkWidget *widget, gpointer user_data)
+{
+  gtk_window_capture_leave (widget);
 }
 
 static void
@@ -1713,9 +1728,9 @@ gtk_window_init (GtkWindow *window)
   gtk_event_controller_set_propagation_phase (controller,
                                               GTK_PHASE_CAPTURE);
   g_signal_connect_swapped (controller, "motion",
-                            G_CALLBACK (gtk_window_capture_motion), window);
+                            G_CALLBACK (gtk_window_capture_motion_adapter), window);
   g_signal_connect_swapped (controller, "leave",
-                            G_CALLBACK (gtk_window_capture_leave), window);
+                            G_CALLBACK (gtk_window_capture_leave_adapter), window);
   gtk_widget_add_controller (widget, controller);
 
   controller = gtk_event_controller_key_new ();
