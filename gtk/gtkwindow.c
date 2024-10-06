@@ -732,6 +732,30 @@ gtk_window_get_request_mode (GtkWidget *widget)
 }
 
 static void
+gtk_window_keys_changed_adapter (GtkWindow *window, gpointer user_data)
+{
+  GTK_WINDOW_GET_CLASS (window)->keys_changed(window);
+}
+
+static void
+gtk_window_activate_focus_adapter (GtkWindow *window, gpointer user_data)
+{
+  GTK_WINDOW_GET_CLASS (window)->activate_focus(window);
+}
+
+static void
+gtk_window_activate_default_adapter (GtkWindow *window, gpointer user_data)
+{
+  GTK_WINDOW_GET_CLASS (window)->activate_default(window);
+}
+
+static gboolean
+gtk_window_close_request_adapter (GtkWindow *window, gpointer user_data)
+{
+  return GTK_WINDOW_GET_CLASS (window)->close_request(window);
+}
+
+static void
 gtk_window_class_init (GtkWindowClass *klass)
 {
   GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
@@ -1056,14 +1080,14 @@ gtk_window_class_init (GtkWindowClass *klass)
    * This is a [keybinding signal](class.SignalAction.html).
    */
   window_signals[ACTIVATE_FOCUS] =
-    g_signal_new (I_("activate-focus"),
-                  G_TYPE_FROM_CLASS (gobject_class),
-                  G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION,
-                  G_STRUCT_OFFSET (GtkWindowClass, activate_focus),
-                  NULL, NULL,
-                  NULL,
-                  G_TYPE_NONE,
-                  0);
+    g_signal_new_class_handler (I_("activate-focus"),
+                                G_TYPE_FROM_CLASS (gobject_class),
+                                G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION,
+                                G_CALLBACK (gtk_window_activate_focus_adapter),
+                                NULL, NULL,
+                                NULL,
+                                G_TYPE_NONE,
+                                0);
 
   /**
    * GtkWindow::activate-default:
@@ -1075,14 +1099,14 @@ gtk_window_class_init (GtkWindowClass *klass)
    * This is a [keybinding signal](class.SignalAction.html).
    */
   window_signals[ACTIVATE_DEFAULT] =
-    g_signal_new (I_("activate-default"),
-                  G_TYPE_FROM_CLASS (gobject_class),
-                  G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION,
-                  G_STRUCT_OFFSET (GtkWindowClass, activate_default),
-                  NULL, NULL,
-                  NULL,
-                  G_TYPE_NONE,
-                  0);
+      g_signal_new_class_handler (I_("activate-default"),
+                                  G_TYPE_FROM_CLASS (gobject_class),
+                                  G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION,
+                                  G_CALLBACK (gtk_window_activate_default_adapter),
+                                  NULL, NULL,
+                                  NULL,
+                                  G_TYPE_NONE,
+                                  0);
 
   /**
    * GtkWindow::keys-changed:
@@ -1095,14 +1119,14 @@ gtk_window_class_init (GtkWindowClass *klass)
    * to implement keyboard shortcuts
    */
   window_signals[KEYS_CHANGED] =
-    g_signal_new (I_("keys-changed"),
-                  G_TYPE_FROM_CLASS (gobject_class),
-                  G_SIGNAL_RUN_FIRST | G_SIGNAL_DEPRECATED,
-                  G_STRUCT_OFFSET (GtkWindowClass, keys_changed),
-                  NULL, NULL,
-                  NULL,
-                  G_TYPE_NONE,
-                  0);
+    g_signal_new_class_handler (I_("keys-changed"),
+                                G_TYPE_FROM_CLASS (gobject_class),
+                                G_SIGNAL_RUN_FIRST | G_SIGNAL_DEPRECATED,
+                                G_CALLBACK (gtk_window_keys_changed_adapter),
+                                NULL, NULL,
+                                NULL,
+                                G_TYPE_NONE,
+                                0);
 
   /**
    * GtkWindow::enable-debugging:
@@ -1141,14 +1165,14 @@ gtk_window_class_init (GtkWindowClass *klass)
    * Return: %TRUE to stop other handlers from being invoked for the signal
    */
   window_signals[CLOSE_REQUEST] =
-    g_signal_new (I_("close-request"),
-                  G_TYPE_FROM_CLASS (gobject_class),
-                  G_SIGNAL_RUN_LAST,
-                  G_STRUCT_OFFSET (GtkWindowClass, close_request),
-                  _gtk_boolean_handled_accumulator, NULL,
-                  NULL,
-                  G_TYPE_BOOLEAN,
-                  0);
+    g_signal_new_class_handler (I_("close-request"),
+                                G_TYPE_FROM_CLASS (gobject_class),
+                                G_SIGNAL_RUN_LAST,
+                                G_CALLBACK (gtk_window_close_request_adapter),
+                                _gtk_boolean_handled_accumulator, NULL,
+                                NULL,
+                                G_TYPE_BOOLEAN,
+                                0);
 
   /*
    * Key bindings
