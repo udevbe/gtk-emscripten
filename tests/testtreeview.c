@@ -769,7 +769,7 @@ main (int    argc,
  * GtkTreeModelTypes
  */
 
-static void         gtk_tree_model_types_init                 (GtkTreeModelTypes      *model_types);
+static void         gtk_tree_model_types_init                 (GtkTreeModelTypes      *model_types, gpointer klass);
 static void         gtk_tree_model_types_tree_model_init      (GtkTreeModelIface   *iface);
 static int          gtk_real_model_types_get_n_columns   (GtkTreeModel        *tree_model);
 static GType        gtk_real_model_types_get_column_type (GtkTreeModel        *tree_model,

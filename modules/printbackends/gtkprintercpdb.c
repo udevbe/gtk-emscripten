@@ -23,8 +23,8 @@ enum {
   PROP_PRINTER_OBJ
 };
 
-static void gtk_printer_cpdb_init       (GtkPrinterCpdb      *printer);
-static void gtk_printer_cpdb_class_init (GtkPrinterCpdbClass *class);
+static void gtk_printer_cpdb_init       (GtkPrinterCpdb      *printer, gpointer klass);
+static void gtk_printer_cpdb_class_init (GtkPrinterCpdbClass *class, gpointer class_data);
 
 static GType gtk_printer_cpdb_type = 0;
 

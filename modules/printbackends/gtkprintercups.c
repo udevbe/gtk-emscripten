@@ -31,8 +31,8 @@ enum {
   PROP_PROFILE_TITLE
 };
 
-static void gtk_printer_cups_init       (GtkPrinterCups      *printer);
-static void gtk_printer_cups_class_init (GtkPrinterCupsClass *class);
+static void gtk_printer_cups_init       (GtkPrinterCups      *printer, gpointer klass);
+static void gtk_printer_cups_class_init (GtkPrinterCupsClass *class, gpointer class_data);
 static void gtk_printer_cups_finalize   (GObject             *object);
 
 static GtkPrinterClass *gtk_printer_cups_parent_class;
