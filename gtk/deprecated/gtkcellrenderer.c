@@ -173,7 +173,7 @@ gtk_cell_renderer_get_instance_private (GtkCellRenderer *self)
 }
 
 static void
-gtk_cell_renderer_init (GtkCellRenderer *cell)
+gtk_cell_renderer_init (GtkCellRenderer *cell, gpointer klass)
 {
   GtkCellRendererPrivate *priv;
 

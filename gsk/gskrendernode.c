@@ -159,7 +159,7 @@ gsk_render_node_real_diff (GskRenderNode  *node1,
 }
 
 static void
-gsk_render_node_class_init (GskRenderNodeClass *klass)
+gsk_render_node_class_init (GskRenderNodeClass *klass, gpointer class_data)
 {
   klass->node_type = GSK_NOT_A_RENDER_NODE;
   klass->finalize = gsk_render_node_finalize;
@@ -169,7 +169,7 @@ gsk_render_node_class_init (GskRenderNodeClass *klass)
 }
 
 static void
-gsk_render_node_init (GskRenderNode *self)
+gsk_render_node_init (GskRenderNode *self, gpointer klass)
 {
   g_atomic_ref_count_init (&self->ref_count);
 }

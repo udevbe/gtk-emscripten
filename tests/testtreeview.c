@@ -862,7 +862,7 @@ gtk_tree_model_types_tree_model_init (GtkTreeModelIface *iface)
 }
 
 static void
-gtk_tree_model_types_init (GtkTreeModelTypes *model_types)
+gtk_tree_model_types_init (GtkTreeModelTypes *model_types, gpointer klass)
 {
   model_types->stamp = g_random_int ();
 }

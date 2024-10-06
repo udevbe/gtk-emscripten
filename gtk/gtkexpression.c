@@ -597,7 +597,7 @@ gtk_expression_class_init (GtkExpressionClass *klass, gpointer class_data)
 }
 
 static void
-gtk_expression_init (GtkExpression *self)
+gtk_expression_init (GtkExpression *self, gpointer klass)
 {
   g_atomic_ref_count_init (&self->ref_count);
 }

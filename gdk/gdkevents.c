@@ -182,7 +182,7 @@ gdk_event_real_get_axes (GdkEvent  *self,
 }
 
 static void
-gdk_event_class_init (GdkEventClass *klass)
+gdk_event_class_init (GdkEventClass *klass, gpointer class_data)
 {
   klass->finalize = gdk_event_finalize;
   klass->get_state = gdk_event_real_get_state;
@@ -193,7 +193,7 @@ gdk_event_class_init (GdkEventClass *klass)
 }
 
 static void
-gdk_event_init (GdkEvent *self)
+gdk_event_init (GdkEvent *self, gpointer klass)
 {
   g_ref_count_init (&self->ref_count);
 }

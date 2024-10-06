@@ -66,7 +66,7 @@ gtk_printer_cpdb_get_type (void)
 }
 
 static void
-gtk_printer_cpdb_class_init (GtkPrinterCpdbClass *klass)
+gtk_printer_cpdb_class_init (GtkPrinterCpdbClass *klass, gpointer class_data)
 {
 
   GObjectClass *object_class = G_OBJECT_CLASS (klass);
@@ -83,7 +83,7 @@ gtk_printer_cpdb_class_init (GtkPrinterCpdbClass *klass)
 }
 
 static void
-gtk_printer_cpdb_init (GtkPrinterCpdb *self)
+gtk_printer_cpdb_init (GtkPrinterCpdb *self, gpointer klass)
 {
 }
 

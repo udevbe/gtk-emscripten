@@ -76,7 +76,7 @@ gtk_printer_cups_get_type (void)
 }
 
 static void
-gtk_printer_cups_class_init (GtkPrinterCupsClass *class)
+gtk_printer_cups_class_init (GtkPrinterCupsClass *class, gpointer class_data)
 {
   GObjectClass *object_class = (GObjectClass *) class;
 
@@ -94,7 +94,7 @@ gtk_printer_cups_class_init (GtkPrinterCupsClass *class)
 }
 
 static void
-gtk_printer_cups_init (GtkPrinterCups *printer)
+gtk_printer_cups_init (GtkPrinterCups *printer, gpointer klass)
 {
   printer->device_uri = NULL;
   printer->original_device_uri = NULL;
