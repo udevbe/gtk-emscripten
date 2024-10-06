@@ -1647,6 +1647,14 @@ gtk_window_accept_rootwindow_drop (GtkDropTargetAsync *self,
 }
 
 static void
+gtk_window_handle_focus_adapter( GtkWidget *widget,
+                                 GdkEvent  *event,
+                                 gpointer user_data)
+{
+  gtk_window_handle_focus (widget, event, NULL, NULL);
+}
+
+static void
 gtk_window_init (GtkWindow *window)
 {
   GtkWindowPrivate *priv = gtk_window_get_instance_private (window);
@@ -1721,7 +1729,7 @@ gtk_window_init (GtkWindow *window)
   controller = gtk_event_controller_legacy_new ();
   gtk_event_controller_set_static_name (controller, "gtk-window-toplevel-focus");
   g_signal_connect_swapped (controller, "event",
-                            G_CALLBACK (gtk_window_handle_focus), window);
+                            G_CALLBACK (gtk_window_handle_focus_adapter), window);
   gtk_widget_add_controller (widget, controller);
 
   controller = gtk_shortcut_controller_new ();
