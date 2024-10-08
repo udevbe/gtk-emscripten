@@ -369,11 +369,11 @@ static gboolean gtk_window_key_pressed    (GtkWidget         *widget,
                                            guint              keycode,
                                            GdkModifierType    state,
                                            gpointer           data);
-static gboolean gtk_window_key_released   (GtkWidget         *widget,
-                                           guint              keyval,
-                                           guint              keycode,
-                                           GdkModifierType    state,
-                                           gpointer           data);
+static void gtk_window_key_released   (GtkWidget         *widget,
+                                       guint              keyval,
+                                       guint              keycode,
+                                       GdkModifierType    state,
+                                       gpointer           data);
 
 static void     surface_state_changed     (GtkWidget          *widget);
 static void     surface_size_changed      (GtkWidget          *widget,
