@@ -6885,6 +6885,16 @@ captured_key (GtkEventControllerKey *controller,
 }
 
 static void
+captured_key_adapter (GtkEventControllerKey *controller,
+              guint                  keyval,
+              guint                  keycode,
+              GdkModifierType        state,
+              gpointer               data)
+{
+  captured_key (controller, keyval, keycode, state, data);
+}
+
+static void
 post_process_ui (GtkFileChooserWidget *impl)
 {
   GFile            *file;
@@ -6917,7 +6927,7 @@ post_process_ui (GtkFileChooserWidget *impl)
 
   controller = gtk_event_controller_key_new ();
   g_signal_connect (controller, "key-pressed", G_CALLBACK (captured_key), impl);
-  g_signal_connect (controller, "key-released", G_CALLBACK (captured_key), impl);
+  g_signal_connect (controller, "key-released", G_CALLBACK (captured_key_adapter), impl);
   gtk_event_controller_set_propagation_phase (controller, GTK_PHASE_CAPTURE);
   gtk_widget_add_controller (GTK_WIDGET (impl), controller);
 

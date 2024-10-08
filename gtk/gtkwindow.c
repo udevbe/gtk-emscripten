@@ -4941,7 +4941,7 @@ gtk_window_key_pressed (GtkWidget       *widget,
   return FALSE;
 }
 
-static gboolean
+static void
 gtk_window_key_released (GtkWidget       *widget,
                          guint            keyval,
                          guint            keycode,
@@ -4952,8 +4952,6 @@ gtk_window_key_released (GtkWidget       *widget,
 
   _gtk_window_update_focus_visible (window, keyval, state, FALSE);
   update_mnemonics_visible (window, keyval, state, FALSE);
-
-  return FALSE;
 }
 
 static gboolean

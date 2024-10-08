@@ -827,7 +827,7 @@ gtk_popover_key_pressed (GtkWidget       *widget,
   return FALSE;
 }
 
-static gboolean
+static void
 gtk_popover_key_released (GtkWidget       *widget,
                           guint            keyval,
                           guint            keycode,
@@ -839,8 +839,6 @@ gtk_popover_key_released (GtkWidget       *widget,
   root = GTK_WINDOW (gtk_widget_get_root (GTK_WIDGET (popover)));
   _gtk_window_update_focus_visible (root, keyval, state, FALSE);
   update_mnemonics_visible (popover, keyval, state, FALSE);
-
-  return FALSE;
 }
 
 static void

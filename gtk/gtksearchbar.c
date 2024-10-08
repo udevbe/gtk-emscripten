@@ -592,6 +592,16 @@ capture_widget_key_handled (GtkEventControllerKey *controller,
   return handled;
 }
 
+static gboolean
+capture_widget_key_handled_adapter (GtkEventControllerKey *controller,
+                            guint                  keyval,
+                            guint                  keycode,
+                            GdkModifierType        state,
+                            GtkSearchBar          *bar)
+{
+  capture_widget_key_handled (controller, keyval, keycode, state, bar);
+}
+
 /**
  * gtk_search_bar_set_key_capture_widget: (attributes org.gtk.Method.set_property=key-capture-widget)
  * @bar: a `GtkSearchBar`
@@ -641,7 +651,7 @@ gtk_search_bar_set_key_capture_widget (GtkSearchBar *bar,
       g_signal_connect (bar->capture_widget_controller, "key-pressed",
                         G_CALLBACK (capture_widget_key_handled), bar);
       g_signal_connect (bar->capture_widget_controller, "key-released",
-                        G_CALLBACK (capture_widget_key_handled), bar);
+                        G_CALLBACK (capture_widget_key_handled_adapter), bar);
       gtk_widget_add_controller (widget, bar->capture_widget_controller);
     }
 

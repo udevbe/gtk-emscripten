@@ -439,7 +439,7 @@ gtk_entry_completion_init (GtkEntryCompletion *completion)
   completion->insert_text_signal_group = NULL;
 }
 
-static gboolean
+static void
 propagate_to_entry (GtkEventControllerKey *key,
                     guint                  keyval,
                     guint                  keycode,
@@ -448,7 +448,7 @@ propagate_to_entry (GtkEventControllerKey *key,
 {
   GtkText *text = gtk_entry_get_text_widget (GTK_ENTRY (completion->entry));
 
-  return gtk_event_controller_key_forward (key, GTK_WIDGET (text));
+  gtk_event_controller_key_forward (key, GTK_WIDGET (text));
 }
 
 static void

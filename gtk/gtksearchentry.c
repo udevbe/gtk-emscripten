@@ -839,6 +839,16 @@ capture_widget_key_handled (GtkEventControllerKey *controller,
   return GDK_EVENT_PROPAGATE;
 }
 
+static void
+capture_widget_key_handled_adapter (GtkEventControllerKey *controller,
+                                    guint                  keyval,
+                                    guint                  keycode,
+                                    GdkModifierType        state,
+                                    GtkWidget             *widget)
+{
+  capture_widget_key_handled (controller, keyval, keycode, state, widget);
+}
+
 /**
  * gtk_search_entry_set_key_capture_widget:
  * @entry: a `GtkSearchEntry`
@@ -890,7 +900,7 @@ gtk_search_entry_set_key_capture_widget (GtkSearchEntry *entry,
       g_signal_connect (entry->capture_widget_controller, "key-pressed",
                         G_CALLBACK (capture_widget_key_handled), entry);
       g_signal_connect (entry->capture_widget_controller, "key-released",
-                        G_CALLBACK (capture_widget_key_handled), entry);
+                        G_CALLBACK (capture_widget_key_handled_adapter), entry);
       gtk_widget_add_controller (widget, entry->capture_widget_controller);
     }
 }
