@@ -751,6 +751,38 @@ gtk_gesture_reset (GtkEventController *controller)
 }
 
 static void
+gtk_gesture_begin_adapter (GtkGesture       *gesture,
+                           GdkEventSequence *sequence,
+                           gpointer          user_data)
+{
+  GTK_GESTURE_GET_CLASS (gesture)->begin (gesture, sequence);
+}
+
+static void
+gtk_gesture_end_adapter (GtkGesture       *gesture,
+                         GdkEventSequence *sequence,
+                         gpointer          user_data)
+{
+  GTK_GESTURE_GET_CLASS (gesture)->end (gesture, sequence);
+}
+
+static void
+gtk_gesture_update_adapter (GtkGesture       *gesture,
+                            GdkEventSequence *sequence,
+                            gpointer          user_data)
+{
+  GTK_GESTURE_GET_CLASS (gesture)->update (gesture, sequence);
+}
+
+static void
+gtk_gesture_cancel_adapter (GtkGesture       *gesture,
+                            GdkEventSequence *sequence,
+                            gpointer          user_data)
+{
+  GTK_GESTURE_GET_CLASS (gesture)->cancel (gesture, sequence);
+}
+
+static void
 gtk_gesture_class_init (GtkGestureClass *klass)
 {
   GObjectClass *object_class = G_OBJECT_CLASS (klass);
@@ -795,12 +827,12 @@ gtk_gesture_class_init (GtkGestureClass *klass)
    * touches, so don't rely on this being true.
    */
   signals[BEGIN] =
-    g_signal_new (I_("begin"),
-                  G_TYPE_FROM_CLASS (klass),
-                  G_SIGNAL_RUN_LAST,
-                  G_STRUCT_OFFSET (GtkGestureClass, begin),
-                  NULL, NULL, NULL,
-                  G_TYPE_NONE, 1, GDK_TYPE_EVENT_SEQUENCE);
+    g_signal_new_class_handler (I_("begin"),
+                                G_TYPE_FROM_CLASS (klass),
+                                G_SIGNAL_RUN_LAST,
+                                G_CALLBACK (gtk_gesture_begin_adapter),
+                                NULL, NULL, NULL,
+                                G_TYPE_NONE, 1, GDK_TYPE_EVENT_SEQUENCE);
 
   /**
    * GtkGesture::end:
@@ -819,12 +851,12 @@ gtk_gesture_class_init (GtkGestureClass *klass)
    * [method@Gtk.Gesture.handles_sequence].
    */
   signals[END] =
-    g_signal_new (I_("end"),
-                  G_TYPE_FROM_CLASS (klass),
-                  G_SIGNAL_RUN_LAST,
-                  G_STRUCT_OFFSET (GtkGestureClass, end),
-                  NULL, NULL, NULL,
-                  G_TYPE_NONE, 1, GDK_TYPE_EVENT_SEQUENCE);
+      g_signal_new_class_handler (I_("end"),
+                                  G_TYPE_FROM_CLASS (klass),
+                                  G_SIGNAL_RUN_LAST,
+                                  G_CALLBACK (gtk_gesture_end_adapter),
+                                  NULL, NULL, NULL,
+                                  G_TYPE_NONE, 1, GDK_TYPE_EVENT_SEQUENCE);
 
   /**
    * GtkGesture::update:
@@ -836,12 +868,12 @@ gtk_gesture_class_init (GtkGestureClass *klass)
    * @sequence is guaranteed to pertain to the set of active touches.
    */
   signals[UPDATE] =
-    g_signal_new (I_("update"),
-                  G_TYPE_FROM_CLASS (klass),
-                  G_SIGNAL_RUN_LAST,
-                  G_STRUCT_OFFSET (GtkGestureClass, update),
-                  NULL, NULL, NULL,
-                  G_TYPE_NONE, 1, GDK_TYPE_EVENT_SEQUENCE);
+    g_signal_new_class_handler (I_("update"),
+                                G_TYPE_FROM_CLASS (klass),
+                                G_SIGNAL_RUN_LAST,
+                                G_CALLBACK (gtk_gesture_update_adapter),
+                                NULL, NULL, NULL,
+                                G_TYPE_NONE, 1, GDK_TYPE_EVENT_SEQUENCE);
 
   /**
    * GtkGesture::cancel:
@@ -860,12 +892,12 @@ gtk_gesture_class_init (GtkGestureClass *klass)
    * response to this signal.
    */
   signals[CANCEL] =
-    g_signal_new (I_("cancel"),
-                  G_TYPE_FROM_CLASS (klass),
-                  G_SIGNAL_RUN_LAST,
-                  G_STRUCT_OFFSET (GtkGestureClass, cancel),
-                  NULL, NULL, NULL,
-                  G_TYPE_NONE, 1, GDK_TYPE_EVENT_SEQUENCE);
+      g_signal_new_class_handler (I_("cancel"),
+                                  G_TYPE_FROM_CLASS (klass),
+                                  G_SIGNAL_RUN_LAST,
+                                  G_CALLBACK (gtk_gesture_cancel_adapter),
+                                  NULL, NULL, NULL,
+                                  G_TYPE_NONE, 1, GDK_TYPE_EVENT_SEQUENCE);
 
   /**
    * GtkGesture::sequence-state-changed:
