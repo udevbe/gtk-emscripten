@@ -481,7 +481,7 @@ gtk_button_set_action_name (GtkActionable *actionable,
 
   g_signal_handlers_disconnect_by_func (button, gtk_real_button_clicked, NULL);
   if (action_name)
-    g_signal_connect_after (button, "clicked", G_CALLBACK (gtk_real_button_clicked), NULL);
+    g_signal_connect_after (button, "clicked", G_CALLBACK (gtk_real_button_clicked_adapter), NULL);
 
   gtk_action_helper_set_action_name (priv->action_helper, action_name);
 }
