@@ -186,6 +186,13 @@ gtk_button_get_request_mode (GtkWidget *widget)
 }
 
 static void
+gtk_button_clicked_adapter (GtkButton *button,
+                            gpointer   user_data)
+{
+  GTK_BUTTON_GET_CLASS (button)->clicked (button);
+}
+
+static void
 gtk_button_class_init (GtkButtonClass *klass)
 {
   const guint activate_keyvals[] = { GDK_KEY_space, GDK_KEY_KP_Space, GDK_KEY_Return,
@@ -272,13 +279,13 @@ gtk_button_class_init (GtkButtonClass *klass)
    * Emitted when the button has been activated (pressed and released).
    */
   button_signals[CLICKED] =
-    g_signal_new (I_("clicked"),
-                  G_OBJECT_CLASS_TYPE (gobject_class),
-                  G_SIGNAL_RUN_FIRST | G_SIGNAL_ACTION,
-                  G_STRUCT_OFFSET (GtkButtonClass, clicked),
-                  NULL, NULL,
-                  NULL,
-                  G_TYPE_NONE, 0);
+    g_signal_new_class_handler (I_("clicked"),
+                                G_OBJECT_CLASS_TYPE (gobject_class),
+                                G_SIGNAL_RUN_FIRST | G_SIGNAL_ACTION,
+                                G_CALLBACK (gtk_button_clicked_adapter),
+                                NULL, NULL,
+                                NULL,
+                                G_TYPE_NONE, 0);
 
   /**
    * GtkButton::activate:
@@ -453,6 +460,13 @@ gtk_button_dispose (GObject *object)
   g_clear_object (&priv->action_helper);
 
   G_OBJECT_CLASS (gtk_button_parent_class)->dispose (object);
+}
+
+static void
+gtk_real_button_clicked_adapter (GtkButton *button,
+                                 gpointer   user_data)
+{
+  gtk_real_button_clicked (button);
 }
 
 static void

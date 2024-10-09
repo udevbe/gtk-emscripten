@@ -957,6 +957,13 @@ stop_search (GtkEntry *entry,
 }
 
 static void
+scroll_to_section_adapter (EmojiSection *section,
+                           gpointer      user_data)
+{
+  scroll_to_section (section);
+}
+
+static void
 setup_section (GtkEmojiChooser *chooser,
                EmojiSection    *section,
                int              group,
@@ -968,7 +975,7 @@ setup_section (GtkEmojiChooser *chooser,
 
   gtk_flow_box_disable_move_cursor (GTK_FLOW_BOX (section->box));
   gtk_flow_box_set_filter_func (GTK_FLOW_BOX (section->box), filter_func, section, NULL);
-  g_signal_connect_swapped (section->button, "clicked", G_CALLBACK (scroll_to_section), section);
+  g_signal_connect_swapped (section->button, "clicked", G_CALLBACK (scroll_to_section_adapter), section);
 }
 
 static void

@@ -521,6 +521,13 @@ on_remove_server_button_clicked (RemoveServerData *data)
 }
 
 static void
+on_remove_server_button_clicked_adapter (RemoveServerData *data,
+                                         gpointer          user_data)
+{
+  on_remove_server_button_clicked (data);
+}
+
+static void
 populate_servers (GtkPlacesView *view)
 {
   GBookmarkFile *server_list;
@@ -605,7 +612,7 @@ populate_servers (GtkPlacesView *view)
 
       g_signal_connect_swapped (button,
                                 "clicked",
-                                G_CALLBACK (on_remove_server_button_clicked),
+                                G_CALLBACK (on_remove_server_button_clicked_adapter),
                                 data);
 
       g_free (name);

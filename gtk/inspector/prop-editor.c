@@ -917,6 +917,13 @@ toggle_unicode (GtkToggleButton *button,
     }
 }
 
+static void
+object_properties_adapter (GtkInspectorPropEditor *self,
+                           gpointer                user_data)
+{
+
+}
+
 static GtkWidget *
 property_editor (GObject                *object,
                  GParamSpec             *spec,
@@ -1149,7 +1156,7 @@ property_editor (GObject                *object,
       label = gtk_label_new ("");
       button = gtk_button_new_with_label (_("Properties"));
       g_signal_connect_swapped (button, "clicked",
-                                G_CALLBACK (object_properties),
+                                G_CALLBACK (object_properties_adapter),
                                 self);
       gtk_box_append (GTK_BOX (prop_edit), label);
       gtk_box_append (GTK_BOX (prop_edit), button);
@@ -1565,6 +1572,13 @@ reset_setting (GtkInspectorPropEditor *self)
 }
 
 static void
+reset_setting_adapter (GtkInspectorPropEditor *self,
+                       gpointer                user_data)
+{
+  reset_setting (self);
+}
+
+static void
 add_gtk_settings_info (GtkInspectorPropEditor *self)
 {
   GObject *object;
@@ -1584,7 +1598,7 @@ add_gtk_settings_info (GtkInspectorPropEditor *self)
   button = gtk_button_new_with_label (_("Reset"));
   gtk_box_append (GTK_BOX (row), button);
   gtk_widget_set_sensitive (button, FALSE);
-  g_signal_connect_swapped (button, "clicked", G_CALLBACK (reset_setting), self);
+  g_signal_connect_swapped (button, "clicked", G_CALLBACK (reset_setting_adapter), self);
 
   switch (_gtk_settings_get_setting_source (GTK_SETTINGS (object), name))
     {

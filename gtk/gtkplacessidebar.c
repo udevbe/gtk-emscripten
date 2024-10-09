@@ -399,6 +399,13 @@ list_box_header_func (GtkListBoxRow *row,
     }
 }
 
+static gboolean
+eject_or_unmount_bookmark_adapter (GtkSidebarRow *row,
+                                   gpointer       user_data)
+{
+  eject_or_unmount_bookmark (row);
+}
+
 static GtkWidget*
 add_place (GtkPlacesSidebar            *sidebar,
            GtkPlacesPlaceType           place_type,
@@ -454,7 +461,7 @@ add_place (GtkPlacesSidebar            *sidebar,
   eject_button = gtk_sidebar_row_get_eject_button (GTK_SIDEBAR_ROW (row));
 
   g_signal_connect_swapped (eject_button, "clicked",
-                            G_CALLBACK (eject_or_unmount_bookmark), row);
+                            G_CALLBACK (eject_or_unmount_bookmark_adapter), row);
 
   gesture = gtk_gesture_click_new ();
   gtk_gesture_single_set_button (GTK_GESTURE_SINGLE (gesture), 0);

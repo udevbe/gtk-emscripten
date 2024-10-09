@@ -105,13 +105,20 @@ static GParamSpec *properties[NUM_PROPERTIES];
 G_DEFINE_TYPE (GtkFontDialogButton, gtk_font_dialog_button, GTK_TYPE_WIDGET)
 
 static void
+button_clicked_adapter (GtkFontDialogButton *self,
+                        gpointer             user_data)
+{
+  button_clicked (self);
+}
+
+static void
 gtk_font_dialog_button_init (GtkFontDialogButton *self)
 {
   GtkWidget *box;
   PangoFontDescription *font_desc;
 
   self->button = gtk_button_new ();
-  g_signal_connect_swapped (self->button, "clicked", G_CALLBACK (button_clicked), self);
+  g_signal_connect_swapped (self->button, "clicked", G_CALLBACK (button_clicked_adapter), self);
   self->font_label = gtk_label_new (_("Font"));
   gtk_widget_set_hexpand (self->font_label, TRUE);
   self->size_label = gtk_label_new ("14");

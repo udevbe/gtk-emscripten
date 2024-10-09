@@ -592,6 +592,13 @@ holder_name (gpointer item)
 }
 
 static void
+refresh_all_adapter (GtkInspectorActions *sl,
+                     gpointer             user_data)
+{
+  refresh_all (sl);
+}
+
+static void
 constructed (GObject *object)
 {
   GtkInspectorActions *sl = GTK_INSPECTOR_ACTIONS (object);
@@ -599,7 +606,7 @@ constructed (GObject *object)
   GListModel *model;
 
   g_signal_connect_swapped (sl->button, "clicked",
-                            G_CALLBACK (refresh_all), sl);
+                            G_CALLBACK (refresh_all_adapter), sl);
 
   sorter = GTK_SORTER (gtk_string_sorter_new (gtk_cclosure_expression_new (G_TYPE_STRING,
                                                                NULL,

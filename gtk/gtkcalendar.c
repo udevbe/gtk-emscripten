@@ -532,6 +532,35 @@ gtk_calendar_drag_prepare (GtkDragSource *source,
 #pragma GCC diagnostic ignored "-Wformat-nonliteral"
 
 static void
+calendar_set_month_prev_adapter (GtkCalendar *calendar,
+                                 gpointer     user_data)
+{
+  calendar_set_month_prev (calendar);
+}
+
+static void
+calendar_set_month_next_adapter (GtkCalendar *calendar,
+                                 gpointer     user_data)
+{
+  calendar_set_month_next (calendar);
+}
+
+static void
+calendar_set_year_prev_adapter (GtkCalendar *calendar,
+                                gpointer     user_data)
+{
+  calendar_set_year_prev (calendar);
+}
+
+
+static void
+calendar_set_year_next_adapter (GtkCalendar *calendar,
+                                gpointer     user_data)
+{
+  calendar_set_year_next (calendar);
+}
+
+static void
 gtk_calendar_init (GtkCalendar *calendar)
 {
   GtkWidget *widget = GTK_WIDGET (calendar);
@@ -571,15 +600,15 @@ gtk_calendar_init (GtkCalendar *calendar)
   calendar->month_name_stack = gtk_stack_new ();
   gtk_widget_add_css_class (calendar->month_name_stack, "month");
   calendar->arrow_widgets[0] = gtk_button_new_from_icon_name ("pan-start-symbolic");
-  g_signal_connect_swapped (calendar->arrow_widgets[0], "clicked", G_CALLBACK (calendar_set_month_prev), calendar);
+  g_signal_connect_swapped (calendar->arrow_widgets[0], "clicked", G_CALLBACK (calendar_set_month_prev_adapter), calendar);
   calendar->arrow_widgets[1] = gtk_button_new_from_icon_name ("pan-end-symbolic");
-  g_signal_connect_swapped (calendar->arrow_widgets[1], "clicked", G_CALLBACK (calendar_set_month_next), calendar);
+  g_signal_connect_swapped (calendar->arrow_widgets[1], "clicked", G_CALLBACK (calendar_set_month_next_adapter), calendar);
   gtk_widget_set_hexpand (calendar->arrow_widgets[1], TRUE);
   gtk_widget_set_halign (calendar->arrow_widgets[1], GTK_ALIGN_START);
   calendar->arrow_widgets[2] = gtk_button_new_from_icon_name ("pan-start-symbolic");
-  g_signal_connect_swapped (calendar->arrow_widgets[2], "clicked", G_CALLBACK (calendar_set_year_prev), calendar);
+  g_signal_connect_swapped (calendar->arrow_widgets[2], "clicked", G_CALLBACK (calendar_set_year_prev_adapter), calendar);
   calendar->arrow_widgets[3] = gtk_button_new_from_icon_name ("pan-end-symbolic");
-  g_signal_connect_swapped (calendar->arrow_widgets[3], "clicked", G_CALLBACK (calendar_set_year_next), calendar);
+  g_signal_connect_swapped (calendar->arrow_widgets[3], "clicked", G_CALLBACK (calendar_set_year_next_adapter), calendar);
 
   gtk_box_append (GTK_BOX (calendar->header_box), calendar->arrow_widgets[0]);
   gtk_box_append (GTK_BOX (calendar->header_box), calendar->month_name_stack);

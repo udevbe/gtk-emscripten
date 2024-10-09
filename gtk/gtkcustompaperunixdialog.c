@@ -836,6 +836,20 @@ bind_printer_item (GtkSignalListItemFactory *factory,
 }
 
 static void
+add_custom_paper_adapter (GtkCustomPaperUnixDialog *dialog,
+                          gpointer                  user_data)
+{
+  add_custom_paper (dialog);
+}
+
+static void
+remove_custom_paper_adapter (GtkCustomPaperUnixDialog *dialog,
+                             gpointer                  user_data)
+{
+  remove_custom_paper (dialog);
+}
+
+static void
 populate_dialog (GtkCustomPaperUnixDialog *dialog)
 {
   GtkDialog *cpu_dialog = GTK_DIALOG (dialog);
@@ -891,12 +905,12 @@ G_GNUC_END_IGNORE_DEPRECATIONS
   gtk_box_append (GTK_BOX (vbox), toolbar);
 
   button = gtk_button_new_from_icon_name ("list-add-symbolic");
-  g_signal_connect_swapped (button, "clicked", G_CALLBACK (add_custom_paper), dialog);
+  g_signal_connect_swapped (button, "clicked", G_CALLBACK (add_custom_paper_adapter), dialog);
 
   gtk_box_append (GTK_BOX (toolbar), button);
 
   button = gtk_button_new_from_icon_name ("list-remove-symbolic");
-  g_signal_connect_swapped (button, "clicked", G_CALLBACK (remove_custom_paper), dialog);
+  g_signal_connect_swapped (button, "clicked", G_CALLBACK (remove_custom_paper_adapter), dialog);
 
   gtk_box_append (GTK_BOX (toolbar), button);
 

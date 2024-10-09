@@ -374,6 +374,13 @@ gtk_shortcuts_section_class_init (GtkShortcutsSectionClass *klass)
 }
 
 static void
+gtk_shortcuts_section_show_all_adapter (GtkShortcutsSection *self,
+                                        gpointer             user_data)
+{
+  gtk_shortcuts_section_show_all (self);
+}
+
+static void
 gtk_shortcuts_section_init (GtkShortcutsSection *self)
 {
   GtkGesture *gesture;
@@ -404,7 +411,7 @@ gtk_shortcuts_section_init (GtkShortcutsSection *self)
   self->show_all = gtk_button_new_with_mnemonic (_("_Show All"));
   gtk_widget_set_visible (self->show_all, FALSE);
   g_signal_connect_swapped (self->show_all, "clicked",
-                            G_CALLBACK (gtk_shortcuts_section_show_all), self);
+                            G_CALLBACK (gtk_shortcuts_section_show_all_adapter), self);
 
   self->footer = gtk_center_box_new ();
   gtk_box_append (GTK_BOX (self), GTK_WIDGET (self->footer));

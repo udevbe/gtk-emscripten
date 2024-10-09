@@ -101,6 +101,13 @@ static GParamSpec *properties[NUM_PROPERTIES];
 G_DEFINE_TYPE (GtkColorDialogButton, gtk_color_dialog_button, GTK_TYPE_WIDGET)
 
 static void
+button_clicked_adapter (GtkColorDialogButton *self,
+                        gpointer              user_data)
+{
+  button_clicked (self);
+}
+
+static void
 gtk_color_dialog_button_init (GtkColorDialogButton *self)
 {
   PangoLayout *layout;
@@ -111,7 +118,7 @@ gtk_color_dialog_button_init (GtkColorDialogButton *self)
   self->color = GDK_RGBA ("00000000");
 
   self->button = gtk_button_new ();
-  g_signal_connect_swapped (self->button, "clicked", G_CALLBACK (button_clicked), self);
+  g_signal_connect_swapped (self->button, "clicked", G_CALLBACK (button_clicked_adapter), self);
   gtk_widget_set_parent (self->button, GTK_WIDGET (self));
 
   self->swatch = g_object_new (GTK_TYPE_COLOR_SWATCH,
