@@ -7821,13 +7821,6 @@ gtk_widget_real_realize (GtkWidget *widget)
 }
 
 static void
-gtk_widget_unrealize_adapter (GtkWidget *widget,
-                              gpointer   user_data)
-{
-  gtk_widget_unrealize (widget);
-}
-
-static void
 gtk_widget_real_unrealize (GtkWidget *widget)
 {
   GtkWidgetPrivate *priv = gtk_widget_get_instance_private (widget);
