@@ -791,6 +791,13 @@ gtk_widget_real_root (GtkWidget *widget)
     }
 }
 
+void
+gtk_widget_unroot_adapter (GtkWidget *widget,
+                           gpointer   user_data)
+{
+  gtk_widget_unroot (widget);
+}
+
 static void
 gtk_widget_real_unroot (GtkWidget *widget)
 {
@@ -803,7 +810,7 @@ gtk_widget_real_unroot (GtkWidget *widget)
         gtk_shortcut_controller_unroot (GTK_SHORTCUT_CONTROLLER (l->data));
     }
 
-  gtk_widget_forall (widget, (GtkCallback) gtk_widget_unroot, NULL);
+  gtk_widget_forall (widget, (GtkCallback) gtk_widget_unroot_adapter, NULL);
 }
 
 static void
@@ -6845,6 +6852,12 @@ gtk_widget_get_child_visible (GtkWidget *widget)
   return priv->child_visible;
 }
 
+static void
+_gtk_widget_scale_changed_adapter (GtkWidget *widget,
+                                   gpointer   user_data) {
+  _gtk_widget_scale_changed (widget);
+}
+
 void
 _gtk_widget_scale_changed (GtkWidget *widget)
 {
@@ -6859,7 +6872,7 @@ G_GNUC_END_IGNORE_DEPRECATIONS
 
   g_object_notify_by_pspec (G_OBJECT (widget), widget_props[PROP_SCALE_FACTOR]);
 
-  gtk_widget_forall (widget, (GtkCallback)_gtk_widget_scale_changed, NULL);
+  gtk_widget_forall (widget, (GtkCallback) _gtk_widget_scale_changed_adapter, NULL);
 }
 
 /**
@@ -7808,6 +7821,13 @@ gtk_widget_real_realize (GtkWidget *widget)
 }
 
 static void
+gtk_widget_unrealize_adapter (GtkWidget *widget,
+                              gpointer   user_data)
+{
+  gtk_widget_unrealize (widget);
+}
+
+static void
 gtk_widget_real_unrealize (GtkWidget *widget)
 {
   GtkWidgetPrivate *priv = gtk_widget_get_instance_private (widget);
@@ -7820,7 +7840,7 @@ gtk_widget_real_unrealize (GtkWidget *widget)
     * (for example, gdk_ic_destroy () with destroyed window causes crash.)
     */
 
-  gtk_widget_forall (widget, (GtkCallback)gtk_widget_unrealize, NULL);
+  gtk_widget_forall (widget, (GtkCallback)gtk_widget_unrealize_adapter, NULL);
 
   /* Disconnect frame clock */
   gtk_css_node_invalidate_frame_clock (priv->cssnode, FALSE);
