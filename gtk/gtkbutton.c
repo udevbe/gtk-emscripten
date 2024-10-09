@@ -189,7 +189,10 @@ static void
 gtk_button_clicked_adapter (GtkButton *button,
                             gpointer   user_data)
 {
-  GTK_BUTTON_GET_CLASS (button)->clicked (button);
+  if (GTK_BUTTON_GET_CLASS (button)->clicked)
+    {
+      GTK_BUTTON_GET_CLASS (button)->clicked (button);
+    }
 }
 
 static void
