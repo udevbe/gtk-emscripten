@@ -628,6 +628,52 @@ gtk_application_window_dispose (GObject *object)
 }
 
 static void
+g_action_group_action_added_adapter (GActionGroup  *action_group,
+                                     const gchar   *action_name,
+                                     gpointer       user_data)
+{
+  if(G_ACTION_GROUP_GET_IFACE (action_group)->action_added)
+    {
+      G_ACTION_GROUP_GET_IFACE (action_group)->action_added (action_group, action_name);
+    }
+}
+
+static void
+g_action_group_action_enabled_changed_adapter (GActionGroup  *action_group,
+                                               const gchar   *action_name,
+                                               gboolean       enabled,
+                                               gpointer       user_data)
+{
+  if(G_ACTION_GROUP_GET_IFACE (action_group)->action_enabled_changed)
+    {
+      G_ACTION_GROUP_GET_IFACE (action_group)->action_enabled_changed (action_group, action_name, enabled);
+    }
+}
+
+static void
+g_action_group_action_state_changed_adapter (GActionGroup   *action_group,
+                                             const gchar    *action_name,
+                                             GVariant       *state,
+                                             gpointer       user_data)
+{
+  if(G_ACTION_GROUP_GET_IFACE (action_group)->action_state_changed)
+    {
+      G_ACTION_GROUP_GET_IFACE (action_group)->action_state_changed (action_group, action_name, state);
+    }
+}
+
+static void
+g_action_group_action_removed_adapter (GActionGroup  *action_group,
+                                       const gchar   *action_name,
+                                       gpointer       user_data)
+{
+  if(G_ACTION_GROUP_GET_IFACE (action_group)->action_removed)
+    {
+      G_ACTION_GROUP_GET_IFACE (action_group)->action_removed (action_group, action_name);
+    }
+}
+
+static void
 gtk_application_window_init (GtkApplicationWindow *window)
 {
   GtkApplicationWindowPrivate *priv = gtk_application_window_get_instance_private (window);
@@ -641,13 +687,13 @@ gtk_application_window_init (GtkApplicationWindow *window)
    * we dispose, the action group will die, disconnecting all signals.
    */
   g_signal_connect_swapped (priv->actions, "action-added",
-                            G_CALLBACK (g_action_group_action_added), window);
+                            G_CALLBACK (g_action_group_action_added_adapter), window);
   g_signal_connect_swapped (priv->actions, "action-enabled-changed",
-                            G_CALLBACK (g_action_group_action_enabled_changed), window);
+                            G_CALLBACK (g_action_group_action_enabled_changed_adapter), window);
   g_signal_connect_swapped (priv->actions, "action-state-changed",
-                            G_CALLBACK (g_action_group_action_state_changed), window);
+                            G_CALLBACK (g_action_group_action_state_changed_adapter), window);
   g_signal_connect_swapped (priv->actions, "action-removed",
-                            G_CALLBACK (g_action_group_action_removed), window);
+                            G_CALLBACK (g_action_group_action_removed_adapter), window);
 }
 
 static void
