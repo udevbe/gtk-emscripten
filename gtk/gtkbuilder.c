@@ -1049,6 +1049,12 @@ _gtk_builder_add (GtkBuilder *builder,
   child_info->added = TRUE;
 }
 
+static void
+_free_signal_info_adapter (SignalInfo *info)
+{
+  _free_signal_info (info, NULL);
+}
+
 void
 _gtk_builder_add_signals (GtkBuilder *builder,
                           GPtrArray  *signals)
@@ -1056,7 +1062,7 @@ _gtk_builder_add_signals (GtkBuilder *builder,
   GtkBuilderPrivate *priv = gtk_builder_get_instance_private (builder);
 
   if (G_UNLIKELY (!priv->signals))
-    priv->signals = g_ptr_array_new_with_free_func ((GDestroyNotify)_free_signal_info);
+    priv->signals = g_ptr_array_new_with_free_func ((GDestroyNotify)_free_signal_info_adapter);
 
   g_ptr_array_extend_and_steal (priv->signals, signals);
 }
