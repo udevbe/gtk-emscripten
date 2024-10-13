@@ -261,6 +261,16 @@ get_group_first (GtkToggleButton *self)
 }
 
 static void
+gtk_toggle_button_toggled_adapter (GtkToggleButton *toggle_button,
+         gpointer         user_data)
+{
+  if (GTK_TOGGLE_BUTTON_GET_CLASS (toggle_button)->toggled)
+    {
+      GTK_TOGGLE_BUTTON_GET_CLASS (toggle_button)->toggled (toggle_button);
+    }
+}
+
+static void
 gtk_toggle_button_class_init (GtkToggleButtonClass *class)
 {
   GObjectClass *gobject_class = G_OBJECT_CLASS (class);
@@ -306,13 +316,13 @@ gtk_toggle_button_class_init (GtkToggleButtonClass *class)
    * Emitted whenever the `GtkToggleButton`'s state is changed.
    */
   toggle_button_signals[TOGGLED] =
-    g_signal_new (I_("toggled"),
-                  G_OBJECT_CLASS_TYPE (gobject_class),
-                  G_SIGNAL_RUN_FIRST,
-                  G_STRUCT_OFFSET (GtkToggleButtonClass, toggled),
-                  NULL, NULL,
-                  NULL,
-                  G_TYPE_NONE, 0);
+    g_signal_new_class_handler (I_("toggled"),
+                                G_OBJECT_CLASS_TYPE (gobject_class),
+                                G_SIGNAL_RUN_FIRST,
+                                G_CALLBACK (gtk_toggle_button_toggled_adapter),
+                                NULL, NULL,
+                                NULL,
+                                G_TYPE_NONE, 0);
 
   gtk_widget_class_set_css_name (widget_class, I_("button"));
 
