@@ -653,13 +653,20 @@ add_arrow (GtkMenuButton *self)
 }
 
 static void
+gtk_menu_button_toggled_adapter (GtkMenuButton *self,
+                                 gpointer       user_data)
+{
+  gtk_menu_button_toggled (self);
+}
+
+static void
 gtk_menu_button_init (GtkMenuButton *self)
 {
   self->arrow_type = GTK_ARROW_DOWN;
 
   self->button = gtk_toggle_button_new ();
   gtk_widget_set_parent (self->button, GTK_WIDGET (self));
-  g_signal_connect_swapped (self->button, "toggled", G_CALLBACK (gtk_menu_button_toggled), self);
+  g_signal_connect_swapped (self->button, "toggled", G_CALLBACK (gtk_menu_button_toggled_adapter), self);
   add_arrow (self);
   update_style_classes (self);
 

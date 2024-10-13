@@ -39,6 +39,13 @@ source_toggled (GtkCheckButton *button)
       gtk_stack_set_visible_child_name (GTK_STACK (stack), "formatted");
     }
 }
+static void
+source_toggled_adapter (GtkCheckButton *button,
+                        gpointer        user_data)
+{
+  source_toggled (button);
+}
+
 
 GtkWidget *
 do_markup (GtkWidget *do_widget)
@@ -66,7 +73,7 @@ do_markup (GtkWidget *do_widget)
 
       show_source = gtk_check_button_new_with_label ("Source");
       gtk_widget_set_valign (show_source, GTK_ALIGN_CENTER);
-      g_signal_connect (show_source, "toggled", G_CALLBACK (source_toggled), stack);
+      g_signal_connect (show_source, "toggled", G_CALLBACK (source_toggled_adapter), stack);
 
       header = gtk_header_bar_new ();
       gtk_header_bar_pack_start (GTK_HEADER_BAR (header), show_source);
