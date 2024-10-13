@@ -273,12 +273,20 @@ unmap (GtkWidget *widget)
 }
 
 static void
+update_key_capture_adapter (GtkInspectorPropList *pl,
+                            GParamSpec   *pspec,
+                            gpointer      user_data)
+{
+  update_key_capture (pl);
+}
+
+static void
 root (GtkWidget *widget)
 {
   GTK_WIDGET_CLASS (gtk_inspector_prop_list_parent_class)->root (widget);
 
   g_signal_connect_swapped (gtk_widget_get_root (widget), "notify::focus-widget",
-                            G_CALLBACK (update_key_capture), widget);
+                            G_CALLBACK (update_key_capture_adapter), widget);
 }
 
 static void

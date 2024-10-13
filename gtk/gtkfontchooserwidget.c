@@ -838,12 +838,20 @@ gtk_font_chooser_widget_unmap (GtkWidget *widget)
 }
 
 static void
+update_key_capture_adapter (GtkWidget   *chooser,
+                            GParamSpec   *pspec,
+                            gpointer      user_data)
+{
+  update_key_capture (chooser);
+}
+
+static void
 gtk_font_chooser_widget_root (GtkWidget *widget)
 {
   GTK_WIDGET_CLASS (gtk_font_chooser_widget_parent_class)->root (widget);
 
   g_signal_connect_swapped (gtk_widget_get_root (widget), "notify::focus-widget",
-                            G_CALLBACK (update_key_capture), widget);
+                            G_CALLBACK (update_key_capture_adapter), widget);
 }
 
 static void

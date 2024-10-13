@@ -650,6 +650,14 @@ focus_change_handler (GtkWidget *widget)
 }
 
 static void
+focus_change_handler_adapter (GtkWidget   *widget,
+                              GParamSpec  *pspec,
+                              gpointer     user_data)
+{
+  focus_change_handler (widget);
+}
+
+static void
 setup_focus_change_handler (GtkViewport *viewport)
 {
   GtkRoot *root;
@@ -657,7 +665,7 @@ setup_focus_change_handler (GtkViewport *viewport)
   root = gtk_widget_get_root (GTK_WIDGET (viewport));
 
   viewport->focus_handler = g_signal_connect_swapped (root, "notify::focus-widget",
-                                                      G_CALLBACK (focus_change_handler), viewport);
+                                                      G_CALLBACK (focus_change_handler_adapter), viewport);
 }
 
 static void
