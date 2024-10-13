@@ -273,9 +273,9 @@ unmap (GtkWidget *widget)
 }
 
 static void
-update_key_capture_adapter (GtkInspectorPropList *pl,
-                            GParamSpec   *pspec,
-                            gpointer      user_data)
+update_key_capture_adapter (GtkInspectorPropList  *pl,
+                            GParamSpec            *pspec,
+                            gpointer               user_data)
 {
   update_key_capture (pl);
 }
