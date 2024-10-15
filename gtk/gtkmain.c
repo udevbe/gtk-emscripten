@@ -456,6 +456,9 @@ _gtk_module_has_mixed_deps (GModule *module_to_check)
 
   if (!module_to_check)
     module = g_module_open (NULL, 0);
+    if (module == NULL)
+      /* some architectures like WASM don't support module loading */
+      return FALSE;
   else
     module = module_to_check;
 
