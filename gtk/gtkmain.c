@@ -1761,7 +1761,7 @@ static void
 g_object_ref_adapter (gpointer data,
                       gpointer user_data)
 {
-  g_object_ref ((GObject*) object);
+  g_object_ref ((GObject*) data);
 }
 
 static void
