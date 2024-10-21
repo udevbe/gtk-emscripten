@@ -1757,6 +1757,13 @@ gtk_main_get_window_group (GtkWidget *widget)
     return gtk_window_get_group (NULL);
 }
 
+static GObject*
+g_object_ref_adapter (GObject* object,
+                      gpointer user_data)
+{
+  g_object_ref (object);
+}
+
 static void
 gtk_grab_notify (GtkWindowGroup *group,
                  GtkWidget      *old_grab_widget,
@@ -1771,7 +1778,7 @@ gtk_grab_notify (GtkWindowGroup *group,
   g_object_ref (group);
 
   toplevels = gtk_window_list_toplevels ();
-  g_list_foreach (toplevels, (GFunc)g_object_ref, NULL);
+  g_list_foreach (toplevels, (GFunc)g_object_ref_adapter, NULL);
 
   while (toplevels)
     {
