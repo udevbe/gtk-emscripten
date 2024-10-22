@@ -1209,12 +1209,12 @@ gtk_icon_theme_set_display (GtkIconTheme *self,
       g_signal_connect_data (display, "closed",
                              G_CALLBACK (display_closed__mainthread_unlocked),
                              gtk_icon_theme_ref_ref (self->ref),
-                             gtk_icon_theme_ref_unref_adapter,
+                             (GClosureNotify)gtk_icon_theme_ref_unref_adapter,
                              0);
       g_signal_connect_data (self->display_settings, "notify::gtk-icon-theme-name",
                              G_CALLBACK (theme_changed__mainthread_unlocked),
                              gtk_icon_theme_ref_ref (self->ref),
-                             (GClosureNotify)gtk_icon_theme_ref_unref,
+                             (GClosureNotify)gtk_icon_theme_ref_unref_adater,
                              0);
 
       g_object_notify_by_pspec (G_OBJECT (self), props[PROP_DISPLAY]);
