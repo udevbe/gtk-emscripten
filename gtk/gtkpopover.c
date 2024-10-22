@@ -932,6 +932,20 @@ node_style_changed_cb (GtkCssNode        *node,
 }
 
 static void
+gtk_popover_focus_in_adapter (GtkWidget  *widget,
+                              gpointer    user_data)
+{
+  gtk_popover_focus_in (widget);
+}
+
+static void
+gtk_popover_focus_out_adapter (GtkWidget *widget,
+                               gpointer    user_data)
+{
+  gtk_popover_focus_out (widget);
+}
+
+static void
 gtk_popover_init (GtkPopover *popover)
 {
   GtkPopoverPrivate *priv = gtk_popover_get_instance_private (popover);
@@ -950,8 +964,8 @@ gtk_popover_init (GtkPopover *popover)
   gtk_widget_add_controller (GTK_WIDGET (popover), controller);
 
   controller = gtk_event_controller_focus_new ();
-  g_signal_connect_swapped (controller, "enter", G_CALLBACK (gtk_popover_focus_in), popover);
-  g_signal_connect_swapped (controller, "leave", G_CALLBACK (gtk_popover_focus_out), popover);
+  g_signal_connect_swapped (controller, "enter", G_CALLBACK (gtk_popover_focus_in_adapter), popover);
+  g_signal_connect_swapped (controller, "leave", G_CALLBACK (gtk_popover_focus_out_adapter), popover);
   gtk_widget_add_controller (widget, controller);
 
   priv->arrow_node = gtk_css_node_new ();
