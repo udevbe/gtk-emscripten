@@ -1837,6 +1837,26 @@ gtk_popover_get_request_mode (GtkWidget *widget)
 }
 
 static void
+gtk_popover_closed_adapter (GtkPopover *popover,
+                            gpointer    user_data)
+{
+  if (GTK_POPOVER_GET_CLASS (popover)-> closed)
+    {
+      GTK_POPOVER_GET_CLASS (popover)-> closed (popover);
+    }
+}
+
+static void
+gtk_popover_activate_default_adapter (GtkPopover *popover,
+                                      gpointer    user_data)
+{
+  if (GTK_POPOVER_GET_CLASS (popover)-> activate_default)
+    {
+      GTK_POPOVER_GET_CLASS (popover)-> activate_default (popover);
+    }
+}
+
+static void
 gtk_popover_class_init (GtkPopoverClass *klass)
 {
   GObjectClass *object_class = G_OBJECT_CLASS (klass);
@@ -1953,14 +1973,14 @@ gtk_popover_class_init (GtkPopoverClass *klass)
    * Emitted when the popover is closed.
    */
   signals[CLOSED] =
-    g_signal_new (I_("closed"),
-                  G_TYPE_FROM_CLASS (object_class),
-                  G_SIGNAL_RUN_LAST,
-                  G_STRUCT_OFFSET (GtkPopoverClass, closed),
-                  NULL, NULL,
-                  NULL,
-                  G_TYPE_NONE,
-                  0);
+    g_signal_new_class_handler (I_("closed"),
+                                G_TYPE_FROM_CLASS (object_class),
+                                G_SIGNAL_RUN_LAST,
+                                G_CALLBACK (gtk_popover_closed_adapter),
+                                NULL, NULL,
+                                NULL,
+                                G_TYPE_NONE,
+                                0);
 
   /**
    * GtkPopover::activate-default:
@@ -1971,14 +1991,14 @@ gtk_popover_class_init (GtkPopoverClass *klass)
    * This is a [keybinding signal](class.SignalAction.html).
    */
   signals[ACTIVATE_DEFAULT] =
-    g_signal_new (I_("activate-default"),
-                  G_TYPE_FROM_CLASS (object_class),
-                  G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION,
-                  G_STRUCT_OFFSET (GtkPopoverClass, activate_default),
-                  NULL, NULL,
-                  NULL,
-                  G_TYPE_NONE,
-                  0);
+    g_signal_new_class_handler (I_("activate-default"),
+                                G_TYPE_FROM_CLASS (object_class),
+                                G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION,
+                                G_CALLBACK (gtk_popover_activate_default_adapter),
+                                NULL, NULL,
+                                NULL,
+                                G_TYPE_NONE,
+                                0);
 
   add_arrow_bindings (widget_class, GDK_KEY_Up, GTK_DIR_UP);
   add_arrow_bindings (widget_class, GDK_KEY_Down, GTK_DIR_DOWN);

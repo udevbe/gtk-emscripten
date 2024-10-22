@@ -1181,6 +1181,13 @@ gtk_icon_theme_unset_display (GtkIconTheme *self)
     }
 }
 
+static void
+gtk_icon_theme_ref_unref_adapter (GtkIconThemeRef *ref,
+                                  GClosure* closure)
+{
+  gtk_icon_theme_ref_unref (ref);
+}
+
 void
 gtk_icon_theme_set_display (GtkIconTheme *self,
                             GdkDisplay   *display)
@@ -1202,7 +1209,7 @@ gtk_icon_theme_set_display (GtkIconTheme *self,
       g_signal_connect_data (display, "closed",
                              G_CALLBACK (display_closed__mainthread_unlocked),
                              gtk_icon_theme_ref_ref (self->ref),
-                             (GClosureNotify)gtk_icon_theme_ref_unref,
+                             gtk_icon_theme_ref_unref_adapter,
                              0);
       g_signal_connect_data (self->display_settings, "notify::gtk-icon-theme-name",
                              G_CALLBACK (theme_changed__mainthread_unlocked),

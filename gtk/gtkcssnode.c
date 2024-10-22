@@ -546,7 +546,7 @@ gtk_css_node_style_changed_adapter (GtkCssNode        *cssnode,
                                     GtkCssStyleChange *change,
                                     gpointer           user_data)
 {
-  GTK_CSS_NODE_GET_CLASS (cssnode)->style_changed(cssnode, change);
+      GTK_CSS_NODE_GET_CLASS (cssnode)->style_changed(cssnode, change);
 }
 
 static void

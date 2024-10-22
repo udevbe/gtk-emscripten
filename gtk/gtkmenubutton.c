@@ -917,6 +917,20 @@ gtk_menu_button_dispose (GObject *object)
   G_OBJECT_CLASS (gtk_menu_button_parent_class)->dispose (object);
 }
 
+static gboolean
+menu_deactivate_cb_adapter (GtkMenuButton *self,
+                            gpointer       user_data)
+{
+  return menu_deactivate_cb (self);
+}
+
+static void
+popover_destroy_cb_adapter (GtkMenuButton *menu_button,
+                            gpointer       user_data)
+{
+  popover_destroy_cb (menu_button);
+}
+
 /**
  * gtk_menu_button_set_popover: (attributes org.gtk.Method.set_property=popover)
  * @menu_button: a `GtkMenuButton`
@@ -960,9 +974,9 @@ gtk_menu_button_set_popover (GtkMenuButton *menu_button,
     {
       gtk_widget_set_parent (menu_button->popover, GTK_WIDGET (menu_button));
       g_signal_connect_swapped (menu_button->popover, "closed",
-                                G_CALLBACK (menu_deactivate_cb), menu_button);
+                                G_CALLBACK (menu_deactivate_cb_adapter), menu_button);
       g_signal_connect_swapped (menu_button->popover, "destroy",
-                                G_CALLBACK (popover_destroy_cb), menu_button);
+                                G_CALLBACK (popover_destroy_cb_adapter), menu_button);
       update_popover_direction (menu_button);
     }
 

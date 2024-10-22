@@ -58,12 +58,12 @@ static void
 gtk_style_provider_default_init (GtkStyleProviderInterface *iface)
 {
   signals[CHANGED] = g_signal_new_class_handler (I_("gtk-private-changed"),
-                                   G_TYPE_FROM_INTERFACE (iface),
-                                   G_SIGNAL_RUN_LAST,
-                                   G_CALLBACK (gtk_style_provider_changed_adapter),
-                                   NULL, NULL,
-                                   NULL,
-                                   G_TYPE_NONE, 0);
+                                                 G_TYPE_FROM_INTERFACE (iface),
+                                                 G_SIGNAL_RUN_LAST,
+                                                 G_CALLBACK (gtk_style_provider_changed_adapter),
+                                                 NULL, NULL,
+                                                 NULL,
+                                                 G_TYPE_NONE, 0);
 }
 
 GtkCssValue *

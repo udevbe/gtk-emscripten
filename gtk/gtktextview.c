@@ -10097,6 +10097,13 @@ emoji_picked (GtkEmojiChooser *chooser,
   gtk_text_buffer_end_user_action (buffer);
 }
 
+static gboolean
+gtk_widget_grab_focus_adapter (GtkWidget  *widget,
+                               gpointer    user_data)
+{
+  return gtk_widget_grab_focus (widget);
+}
+
 static void
 gtk_text_view_insert_emoji (GtkTextView *text_view)
 {
@@ -10117,7 +10124,7 @@ gtk_text_view_insert_emoji (GtkTextView *text_view)
 
       gtk_widget_set_parent (chooser, GTK_WIDGET (text_view));
       g_signal_connect (chooser, "emoji-picked", G_CALLBACK (emoji_picked), text_view);
-      g_signal_connect_swapped (chooser, "hide", G_CALLBACK (gtk_widget_grab_focus), text_view);
+      g_signal_connect_swapped (chooser, "hide", G_CALLBACK (gtk_widget_grab_focus_adapter), text_view);
     }
 
   buffer = get_buffer (text_view);

@@ -440,6 +440,13 @@ gtk_scale_button_toggled_adapter (GtkScaleButton *button,
 }
 
 static void
+gtk_scale_button_closed_adapter (GtkScaleButton *button,
+                                 gpointer        user_data)
+{
+  gtk_scale_button_closed (button);
+}
+
+static void
 gtk_scale_button_init (GtkScaleButton *button)
 {
   GtkScaleButtonPrivate *priv = gtk_scale_button_get_instance_private (button);
@@ -471,7 +478,7 @@ gtk_scale_button_init (GtkScaleButton *button)
   gtk_widget_add_controller (GTK_WIDGET (button), controller);
 
   g_signal_connect_swapped (priv->dock, "closed",
-                            G_CALLBACK (gtk_scale_button_closed), button);
+                            G_CALLBACK (gtk_scale_button_closed_adapter), button);
   g_signal_connect_swapped (priv->button, "toggled",
                             G_CALLBACK (gtk_scale_button_toggled_adapter), button);
 
