@@ -1214,7 +1214,7 @@ gtk_icon_theme_set_display (GtkIconTheme *self,
       g_signal_connect_data (self->display_settings, "notify::gtk-icon-theme-name",
                              G_CALLBACK (theme_changed__mainthread_unlocked),
                              gtk_icon_theme_ref_ref (self->ref),
-                             (GClosureNotify)gtk_icon_theme_ref_unref_adater,
+                             (GClosureNotify)gtk_icon_theme_ref_unref_adapter,
                              0);
 
       g_object_notify_by_pspec (G_OBJECT (self), props[PROP_DISPLAY]);
