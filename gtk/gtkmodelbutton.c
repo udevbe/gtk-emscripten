@@ -1161,9 +1161,9 @@ static void
 gtk_model_button_clicked_adapter (GtkModelButton *button,
                                   gpointer        user_data)
 {
-  if (G_TYPE_INSTANCE_GET_CLASS ((obj), GTK_TYPE_MODEL_BUTTON, GtkModelButtonClass)->clicked)
+  if (G_TYPE_INSTANCE_GET_CLASS ((button), GTK_TYPE_MODEL_BUTTON, GtkModelButtonClass)->clicked)
     {
-      G_TYPE_INSTANCE_GET_CLASS ((obj), GTK_TYPE_MODEL_BUTTON, GtkModelButtonClass)->clicked (button);
+      G_TYPE_INSTANCE_GET_CLASS ((button), GTK_TYPE_MODEL_BUTTON, GtkModelButtonClass)->clicked (button);
     }
 }
 
