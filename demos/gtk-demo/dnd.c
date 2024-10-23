@@ -181,6 +181,17 @@ theme_is_dark (void)
 }
 
 static void
+click_done_adapter (GtkGesture *gesture,
+                    int         n_press,
+                    double      x,
+                    double      y,
+                    gpointer    user_data)
+{
+  click_done (gesture);
+}
+
+
+static void
 canvas_item_init (CanvasItem *item)
 {
   char *text;
@@ -227,7 +238,7 @@ canvas_item_init (CanvasItem *item)
   gtk_widget_add_controller (GTK_WIDGET (item), GTK_EVENT_CONTROLLER (gesture));
 
   gesture = gtk_gesture_click_new ();
-  g_signal_connect (gesture, "released", G_CALLBACK (click_done), NULL);
+  g_signal_connect (gesture, "released", G_CALLBACK (click_done_adapter), NULL);
   gtk_widget_add_controller (GTK_WIDGET (item), GTK_EVENT_CONTROLLER (gesture));
 }
 

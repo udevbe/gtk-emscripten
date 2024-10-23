@@ -588,6 +588,16 @@ gtk_password_entry_new (void)
   return GTK_WIDGET (g_object_new (GTK_TYPE_PASSWORD_ENTRY, NULL));
 }
 
+static void
+gtk_password_entry_toggle_peek_adapter (GtkPasswordEntry *entry,
+                                        guint             n_press,
+                                        double            x,
+                                        double            y,
+                                        gpointer          user_data)
+{
+  gtk_password_entry_toggle_peek (entry);
+}
+
 /**
  * gtk_password_entry_set_show_peek_icon: (attributes org.gtk.Method.set_property=show-peek-icon)
  * @entry: a `GtkPasswordEntry`
@@ -621,7 +631,7 @@ gtk_password_entry_set_show_peek_icon (GtkPasswordEntry *entry,
       g_signal_connect (press, "pressed",
                         G_CALLBACK (gtk_password_entry_icon_press), entry);
       g_signal_connect_swapped (press, "released",
-                                G_CALLBACK (gtk_password_entry_toggle_peek), entry);
+                                G_CALLBACK (gtk_password_entry_toggle_peek_adapter), entry);
       gtk_widget_add_controller (entry->peek_icon, GTK_EVENT_CONTROLLER (press));
 
       g_signal_connect (entry->entry, "notify::visibility",

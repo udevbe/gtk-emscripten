@@ -324,6 +324,42 @@ gtk_gesture_click_handle_event (GtkEventController *controller,
 }
 
 static void
+gtk_gesture_click_pressed_adapter (GtkGestureClick *gesture,
+                                   int              n_press,
+                                   double           x,
+                                   double           y,
+                                   gpointer         user_data)
+{
+  if (GTK_GESTURE_CLICK_GET_CLASS (gesture)->pressed)
+    {
+      GTK_GESTURE_CLICK_GET_CLASS (gesture)->pressed (gesture, n_press, x, y);
+    }
+}
+
+static void
+gtk_gesture_click_released_adapter (GtkGestureClick *gesture,
+                                    int              n_press,
+                                    double           x,
+                                    double           y,
+                                    gpointer         user_data)
+{
+  if (GTK_GESTURE_CLICK_GET_CLASS (gesture)->released)
+    {
+      GTK_GESTURE_CLICK_GET_CLASS (gesture)->released (gesture, n_press, x, y);
+    }
+}
+
+static void
+gtk_gesture_click_stopped_adapter (GtkGestureClick *gesture,
+                                   gpointer         user_data)
+{
+  if (GTK_GESTURE_CLICK_GET_CLASS (gesture)->stopped)
+    {
+      GTK_GESTURE_CLICK_GET_CLASS (gesture)->stopped (gesture);
+    }
+}
+
+static void
 gtk_gesture_click_class_init (GtkGestureClickClass *klass)
 {
   GtkEventControllerClass *controller_class = GTK_EVENT_CONTROLLER_CLASS (klass);
@@ -351,14 +387,14 @@ gtk_gesture_click_class_init (GtkGestureClickClass *klass)
    * Emitted whenever a button or touch press happens.
    */
   signals[PRESSED] =
-    g_signal_new (I_("pressed"),
-                  G_TYPE_FROM_CLASS (klass),
-                  G_SIGNAL_RUN_LAST,
-                  G_STRUCT_OFFSET (GtkGestureClickClass, pressed),
-                  NULL, NULL,
-                  _gtk_marshal_VOID__INT_DOUBLE_DOUBLE,
-                  G_TYPE_NONE, 3, G_TYPE_INT,
-                  G_TYPE_DOUBLE, G_TYPE_DOUBLE);
+    g_signal_new_class_handler (I_("pressed"),
+                                G_TYPE_FROM_CLASS (klass),
+                                G_SIGNAL_RUN_LAST,
+                                G_CALLBACK (gtk_gesture_click_pressed_adapter),
+                                NULL, NULL,
+                                _gtk_marshal_VOID__INT_DOUBLE_DOUBLE,
+                                G_TYPE_NONE, 3, G_TYPE_INT,
+                                G_TYPE_DOUBLE, G_TYPE_DOUBLE);
   g_signal_set_va_marshaller (signals[PRESSED],
                               G_TYPE_FROM_CLASS (klass),
                               _gtk_marshal_VOID__INT_DOUBLE_DOUBLEv);
@@ -378,14 +414,14 @@ gtk_gesture_click_class_init (GtkGestureClickClass *klass)
    * will only start over at the next press.
    */
   signals[RELEASED] =
-    g_signal_new (I_("released"),
-                  G_TYPE_FROM_CLASS (klass),
-                  G_SIGNAL_RUN_LAST,
-                  G_STRUCT_OFFSET (GtkGestureClickClass, released),
-                  NULL, NULL,
-                  _gtk_marshal_VOID__INT_DOUBLE_DOUBLE,
-                  G_TYPE_NONE, 3, G_TYPE_INT,
-                  G_TYPE_DOUBLE, G_TYPE_DOUBLE);
+    g_signal_new_class_handler (I_("released"),
+                                G_TYPE_FROM_CLASS (klass),
+                                G_SIGNAL_RUN_LAST,
+                                G_CALLBACK (gtk_gesture_click_released_adapter),
+                                NULL, NULL,
+                                _gtk_marshal_VOID__INT_DOUBLE_DOUBLE,
+                                G_TYPE_NONE, 3, G_TYPE_INT,
+                                G_TYPE_DOUBLE, G_TYPE_DOUBLE);
   g_signal_set_va_marshaller (signals[RELEASED],
                               G_TYPE_FROM_CLASS (klass),
                               _gtk_marshal_VOID__INT_DOUBLE_DOUBLEv);
@@ -397,12 +433,12 @@ gtk_gesture_click_class_init (GtkGestureClickClass *klass)
    * Emitted whenever any time/distance threshold has been exceeded.
    */
   signals[STOPPED] =
-    g_signal_new (I_("stopped"),
-                  G_TYPE_FROM_CLASS (klass),
-                  G_SIGNAL_RUN_LAST,
-                  G_STRUCT_OFFSET (GtkGestureClickClass, stopped),
-                  NULL, NULL, NULL,
-                  G_TYPE_NONE, 0);
+    g_signal_new_class_handler (I_("stopped"),
+                                G_TYPE_FROM_CLASS (klass),
+                                G_SIGNAL_RUN_LAST,
+                                G_CALLBACK (gtk_gesture_click_stopped_adapter),
+                                NULL, NULL, NULL,
+                                G_TYPE_NONE, 0);
 
   /**
    * GtkGestureClick::unpaired-release

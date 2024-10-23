@@ -217,6 +217,16 @@ gtk_editable_label_focus_out (GtkEventController *controller,
 }
 
 static void
+clicked_cb_adapter (GtkWidget *self,
+                    guint      n_press,
+                    double     x,
+                    double     y,
+                    gpointer   user_data)
+{
+  clicked_cb (self);
+}
+
+static void
 gtk_editable_label_init (GtkEditableLabel *self)
 {
   GtkGesture *gesture;
@@ -237,7 +247,7 @@ gtk_editable_label_init (GtkEditableLabel *self)
   gtk_widget_set_parent (self->stack, GTK_WIDGET (self));
 
   gesture = gtk_gesture_click_new ();
-  g_signal_connect_swapped (gesture, "released", G_CALLBACK (clicked_cb), self);
+  g_signal_connect_swapped (gesture, "released", G_CALLBACK (clicked_cb_adapter), self);
   gtk_widget_add_controller (self->label, GTK_EVENT_CONTROLLER (gesture));
 
   g_signal_connect_swapped (self->entry, "activate", G_CALLBACK (activate_cb), self);

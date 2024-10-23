@@ -1160,6 +1160,16 @@ suggestion_entry_arrow_clicked (SuggestionEntry *self)
   suggestion_entry_set_popup_visible (self, !visible);
 }
 
+static void
+suggestion_entry_arrow_clicked_adapter (SuggestionEntry *self,
+                                        guint            n_press,
+                                        double           x,
+                                        double           y,
+                                        gpointer         user_data)
+{
+  suggestion_entry_arrow_clicked (self);
+}
+
 void
 suggestion_entry_set_show_arrow (SuggestionEntry *self,
                                  gboolean         show_arrow)
@@ -1181,7 +1191,7 @@ suggestion_entry_set_show_arrow (SuggestionEntry *self,
 
       press = gtk_gesture_click_new ();
       g_signal_connect_swapped (press, "released",
-                                G_CALLBACK (suggestion_entry_arrow_clicked), self);
+                                G_CALLBACK (suggestion_entry_arrow_clicked_adapter), self);
       gtk_widget_add_controller (self->arrow, GTK_EVENT_CONTROLLER (press));
 
     }

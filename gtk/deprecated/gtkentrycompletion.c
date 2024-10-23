@@ -451,6 +451,16 @@ propagate_to_entry (GtkEventControllerKey *key,
   gtk_event_controller_key_forward (key, GTK_WIDGET (text));
 }
 
+void
+_gtk_entry_completion_popdown_adapter (GtkEntryCompletion *completion,
+                                       guint               n_press,
+                                       double              x,
+                                       double              y,
+                                       gpointer            user_data)
+{
+  _gtk_entry_completion_popdown (completion);
+}
+
 static void
 gtk_entry_completion_constructed (GObject *object)
 {
@@ -513,7 +523,7 @@ gtk_entry_completion_constructed (GObject *object)
 
   controller = GTK_EVENT_CONTROLLER (gtk_gesture_click_new ());
   g_signal_connect_swapped (controller, "released",
-                            G_CALLBACK (_gtk_entry_completion_popdown),
+                            G_CALLBACK (_gtk_entry_completion_popdown_adapter),
                             completion);
   gtk_widget_add_controller (completion->popup_window, controller);
 
