@@ -917,11 +917,11 @@ gtk_menu_button_dispose (GObject *object)
   G_OBJECT_CLASS (gtk_menu_button_parent_class)->dispose (object);
 }
 
-static gboolean
+static void
 menu_deactivate_cb_adapter (GtkMenuButton *self,
                             gpointer       user_data)
 {
-  return menu_deactivate_cb (self);
+  menu_deactivate_cb (self);
 }
 
 static void
