@@ -1158,6 +1158,16 @@ gtk_model_button_focus (GtkWidget        *widget,
 }
 
 static void
+gtk_model_button_clicked_adapter (GtkModelButton *button,
+                                  gpointer        user_data)
+{
+  if (G_TYPE_INSTANCE_GET_CLASS ((obj), GTK_TYPE_MODEL_BUTTON, GtkModelButtonClass)->clicked)
+    {
+      G_TYPE_INSTANCE_GET_CLASS ((obj), GTK_TYPE_MODEL_BUTTON, GtkModelButtonClass)->clicked (button);
+    }
+}
+
+static void
 gtk_model_button_class_init (GtkModelButtonClass *class)
 {
   GObjectClass *object_class = G_OBJECT_CLASS (class);
@@ -1286,13 +1296,13 @@ gtk_model_button_class_init (GtkModelButtonClass *class)
   g_object_class_override_property (object_class, PROP_ACTION_NAME, "action-name");
   g_object_class_override_property (object_class, PROP_ACTION_TARGET, "action-target");
 
-  signals[SIGNAL_CLICKED] = g_signal_new (I_("clicked"),
-                                          G_OBJECT_CLASS_TYPE (object_class),
-                                          G_SIGNAL_RUN_FIRST | G_SIGNAL_ACTION,
-                                          G_STRUCT_OFFSET (GtkModelButtonClass, clicked),
-                                          NULL, NULL,
-                                          NULL,
-                                          G_TYPE_NONE, 0);
+  signals[SIGNAL_CLICKED] = g_signal_new_class_handler (I_("clicked"),
+                                                        G_OBJECT_CLASS_TYPE (object_class),
+                                                        G_SIGNAL_RUN_FIRST | G_SIGNAL_ACTION,
+                                                        G_CALLBACK (gtk_model_button_clicked_adapter),
+                                                        NULL, NULL,
+                                                        NULL,
+                                                        G_TYPE_NONE, 0);
 
   gtk_widget_class_set_activate_signal (widget_class, signals[SIGNAL_CLICKED]);
   gtk_widget_class_set_layout_manager_type (widget_class, GTK_TYPE_BOX_LAYOUT);
