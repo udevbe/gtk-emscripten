@@ -127,6 +127,14 @@ cloud_row_update (GtkSidebarRow *self)
     g_object_unref (end_icon);
 }
 
+static void
+cloud_row_update_adapter (GtkSidebarRow *self,
+                          GParamSpec    **pspec,
+                          gpointer        user_data)
+{
+  cloud_row_update (self);
+}
+
 #endif
 
 static void
@@ -202,14 +210,6 @@ gtk_sidebar_row_get_property (GObject    *object,
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
     }
-}
-
-static void
-cloud_row_update_adapter (GtkSidebarRow *self,
-                          GParamSpec    **pspec,
-                          gpointer        user_data)
-{
-  cloud_row_update (self);
 }
 
 static void
