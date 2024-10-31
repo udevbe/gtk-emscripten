@@ -194,6 +194,14 @@ catchall_click_press (GtkGestureClick *gesture,
 }
 
 static void
+focus_changed_adapter (GtkWidget    *widget,
+                       GParamSpec  **pspec,
+                       gpointer      user_data)
+{
+  focus_changed (widget);
+}
+
+static void
 gtk_password_entry_init (GtkPasswordEntry *entry)
 {
   GtkGesture *catchall;
@@ -205,7 +213,7 @@ gtk_password_entry_init (GtkPasswordEntry *entry)
   gtk_text_set_input_purpose (GTK_TEXT (entry->entry), GTK_INPUT_PURPOSE_PASSWORD);
   gtk_widget_set_parent (entry->entry, GTK_WIDGET (entry));
   gtk_editable_init_delegate (GTK_EDITABLE (entry));
-  g_signal_connect_swapped (entry->entry, "notify::has-focus", G_CALLBACK (focus_changed), entry);
+  g_signal_connect_swapped (entry->entry, "notify::has-focus", G_CALLBACK (focus_changed_adapter), entry);
   g_signal_connect_swapped (entry->entry, "activate", G_CALLBACK (activate_cb), entry);
 
   entry->icon = gtk_image_new_from_icon_name ("caps-lock-symbolic");

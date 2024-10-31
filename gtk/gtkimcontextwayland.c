@@ -1017,11 +1017,19 @@ on_content_type_changed (GtkIMContextWayland *context)
 }
 
 static void
+on_content_type_changed_adapter (GtkIMContextWayland *context,
+                                 GParamSpec         **pspec,
+                                 gpointer             user_data)
+{
+  on_content_type_changed (context);
+}
+
+static void
 gtk_im_context_wayland_init (GtkIMContextWayland *context)
 {
   context->use_preedit = TRUE;
   g_signal_connect_swapped (context, "notify::input-purpose",
-                            G_CALLBACK (on_content_type_changed), context);
+                            G_CALLBACK (on_content_type_changed_adapter), context);
   g_signal_connect_swapped (context, "notify::input-hints",
-                            G_CALLBACK (on_content_type_changed), context);
+                            G_CALLBACK (on_content_type_changed_adapter), context);
 }

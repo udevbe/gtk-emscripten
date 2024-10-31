@@ -2267,6 +2267,14 @@ font_feature_toggled_cb (GtkCheckButton *check_button,
 }
 
 static void
+update_font_features_adapter (GtkFontChooserWidget *fontchooser,
+                              GParamSpec          **pspec,
+                              gpointer              user_data)
+{
+  update_font_features (fontchooser);
+}
+
+static void
 add_check_group (GtkFontChooserWidget  *fontchooser,
                  const char            *title,
                  const char           **tags,
@@ -2307,7 +2315,7 @@ add_check_group (GtkFontChooserWidget  *fontchooser,
       g_free (name);
       set_inconsistent (GTK_CHECK_BUTTON (feat), TRUE);
       g_signal_connect (feat, "toggled", G_CALLBACK (font_feature_toggled_cb), fontchooser);
-      g_signal_connect_swapped (feat, "notify::inconsistent", G_CALLBACK (update_font_features), fontchooser);
+      g_signal_connect_swapped (feat, "notify::inconsistent", G_CALLBACK (update_font_features_adapter), fontchooser);
 
       gesture = gtk_gesture_click_new ();
       gtk_gesture_single_set_button (GTK_GESTURE_SINGLE (gesture), GDK_BUTTON_SECONDARY);
@@ -2460,7 +2468,7 @@ add_radio_group (GtkFontChooserWidget  *fontchooser,
       else
         gtk_check_button_set_group (GTK_CHECK_BUTTON (feat), GTK_CHECK_BUTTON (group_button));
 
-      g_signal_connect_swapped (feat, "notify::active", G_CALLBACK (update_font_features), fontchooser);
+      g_signal_connect_swapped (feat, "notify::active", G_CALLBACK (update_font_features_adapter), fontchooser);
       g_object_set_data (G_OBJECT (feat), "default", group_button);
 
       example = gtk_label_new ("");

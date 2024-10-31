@@ -1278,6 +1278,14 @@ _gtk_tree_view_column_unset_model (GtkTreeViewColumn *column,
   gtk_tree_view_column_set_sort_indicator (column, FALSE);
 }
 
+static void
+gtk_tree_view_column_setup_sort_column_id_callback_adapter (GtkTreeViewColumn   *tree_column,
+                                                            GParamSpec         **pspec,
+                                                            gpointer             user_data)
+{
+  gtk_tree_view_column_setup_sort_column_id_callback (tree_column);
+}
+
 void
 _gtk_tree_view_column_set_tree_view (GtkTreeViewColumn *column,
 				     GtkTreeView       *tree_view)
@@ -1294,7 +1302,7 @@ _gtk_tree_view_column_set_tree_view (GtkTreeViewColumn *column,
   priv->property_changed_signal =
     g_signal_connect_swapped (tree_view,
 			      "notify::model",
-			      G_CALLBACK (gtk_tree_view_column_setup_sort_column_id_callback),
+			      G_CALLBACK (gtk_tree_view_column_setup_sort_column_id_callback_adapter),
 			      column);
 
   gtk_tree_view_column_setup_sort_column_id_callback (column);

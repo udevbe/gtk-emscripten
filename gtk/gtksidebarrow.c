@@ -205,6 +205,14 @@ gtk_sidebar_row_get_property (GObject    *object,
 }
 
 static void
+cloud_row_update_adapter (GtkSidebarRow *self,
+                          GParamSpec    **pspec,
+                          gpointer        user_data)
+{
+  cloud_row_update (self);
+}
+
+static void
 gtk_sidebar_row_set_property (GObject      *object,
                               guint         prop_id,
                               const GValue *value,
@@ -307,11 +315,11 @@ gtk_sidebar_row_set_property (GObject      *object,
       if (self->cloud_provider_account != NULL)
         {
           g_signal_connect_swapped (self->cloud_provider_account, "notify::name",
-                                    G_CALLBACK (cloud_row_update), self);
+                                    G_CALLBACK (cloud_row_update_adapter), self);
           g_signal_connect_swapped (self->cloud_provider_account, "notify::status",
-                                    G_CALLBACK (cloud_row_update), self);
+                                    G_CALLBACK (cloud_row_update_adapter), self);
           g_signal_connect_swapped (self->cloud_provider_account, "notify::status-details",
-                                    G_CALLBACK (cloud_row_update), self);
+                                    G_CALLBACK (cloud_row_update_adapter), self);
         }
 #endif
       break;

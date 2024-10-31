@@ -388,6 +388,14 @@ window_notify_cb (GtkWindowControls *self,
 }
 
 static void
+update_window_buttons_adapter (GtkWindowControls *self,
+                               GParamSpec       **pspec,
+                               gpointer           user_data)
+{
+  update_window_buttons (self);
+}
+
+static void
 gtk_window_controls_root (GtkWidget *widget)
 {
   GtkSettings *settings;
@@ -397,7 +405,7 @@ gtk_window_controls_root (GtkWidget *widget)
 
   settings = gtk_widget_get_settings (widget);
   g_signal_connect_swapped (settings, "notify::gtk-decoration-layout",
-                            G_CALLBACK (update_window_buttons), widget);
+                            G_CALLBACK (update_window_buttons_adapter), widget);
 
   root = GTK_WIDGET (gtk_widget_get_root (widget));
 

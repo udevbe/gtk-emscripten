@@ -661,6 +661,14 @@ gtk_color_swatch_set_icon (GtkColorSwatch *swatch,
   gtk_widget_queue_draw (GTK_WIDGET (swatch));
 }
 
+static void
+gtk_widget_queue_draw_adapter (GtkWidget   *widget,
+                               GParamSpec **pspec,
+                               gpointer     user_data)
+{
+  gtk_widget_queue_draw (widget);
+}
+
 void
 gtk_color_swatch_set_can_drop (GtkColorSwatch *swatch,
                                gboolean        can_drop)
@@ -673,7 +681,7 @@ gtk_color_swatch_set_can_drop (GtkColorSwatch *swatch,
       swatch->dest = gtk_drop_target_new (GDK_TYPE_RGBA, GDK_ACTION_COPY);
       gtk_drop_target_set_preload (swatch->dest, TRUE);
       g_signal_connect (swatch->dest, "drop", G_CALLBACK (swatch_drag_drop), swatch);
-      g_signal_connect_swapped (swatch->dest, "notify::value", G_CALLBACK (gtk_widget_queue_draw), swatch);
+      g_signal_connect_swapped (swatch->dest, "notify::value", G_CALLBACK (gtk_widget_queue_draw_adapter), swatch);
       gtk_widget_add_controller (GTK_WIDGET (swatch), GTK_EVENT_CONTROLLER (swatch->dest));
     }
   if (!can_drop && swatch->dest)

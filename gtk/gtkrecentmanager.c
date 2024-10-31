@@ -305,6 +305,14 @@ gtk_recent_manager_class_init (GtkRecentManagerClass *klass)
 }
 
 static void
+gtk_recent_manager_enabled_changed_adapter (GtkRecentManager *manager,
+                                            GParamSpec      **pspec,
+                                            gpointer          user_data)
+{
+  gtk_recent_manager_enabled_changed (manager);
+}
+
+static void
 gtk_recent_manager_init (GtkRecentManager *manager)
 {
   GtkRecentManagerPrivate *priv;
@@ -319,7 +327,7 @@ gtk_recent_manager_init (GtkRecentManager *manager)
   settings = gtk_settings_get_default ();
   if (settings)
     g_signal_connect_swapped (settings, "notify::gtk-recent-files-enabled",
-                              G_CALLBACK (gtk_recent_manager_enabled_changed), manager);
+                              G_CALLBACK (gtk_recent_manager_enabled_changed_adapter), manager);
 }
 
 static void

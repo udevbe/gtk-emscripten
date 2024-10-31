@@ -227,6 +227,14 @@ clicked_cb_adapter (GtkWidget *self,
 }
 
 static void
+text_changed_adapter (GtkEditableLabel *self,
+                      GParamSpec      **pspec,
+                      gpointer          user_data)
+{
+  text_changed (self);
+}
+
+static void
 gtk_editable_label_init (GtkEditableLabel *self)
 {
   GtkGesture *gesture;
@@ -251,7 +259,7 @@ gtk_editable_label_init (GtkEditableLabel *self)
   gtk_widget_add_controller (self->label, GTK_EVENT_CONTROLLER (gesture));
 
   g_signal_connect_swapped (self->entry, "activate", G_CALLBACK (activate_cb), self);
-  g_signal_connect_swapped (self->entry, "notify::text", G_CALLBACK (text_changed), self);
+  g_signal_connect_swapped (self->entry, "notify::text", G_CALLBACK (text_changed_adapter), self);
 
   target = gtk_drop_target_new (G_TYPE_STRING, GDK_ACTION_COPY | GDK_ACTION_MOVE);
   g_signal_connect (target, "accept", G_CALLBACK (gtk_editable_label_drag_accept), self);

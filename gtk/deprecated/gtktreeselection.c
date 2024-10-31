@@ -715,6 +715,14 @@ model_changed (gpointer data)
   *stop = TRUE;
 }
 
+static void
+model_changed_adapter (gpointer     data,
+                       GParamSpec **pspec,
+                       gpointer     user_data)
+{
+  model_changed (data);
+}
+
 /**
  * gtk_tree_selection_selected_foreach:
  * @selection: A `GtkTreeSelection`.
@@ -780,7 +788,7 @@ gtk_tree_selection_selected_foreach (GtkTreeSelection            *selection,
 					   G_CALLBACK (model_changed),
 				           &stop);
   changed_id = g_signal_connect_swapped (selection->tree_view, "notify::model",
-					 G_CALLBACK (model_changed),
+					 G_CALLBACK (model_changed_adapter),
 					 &stop);
 
   /* find the node internally */

@@ -267,6 +267,22 @@ gtk_font_chooser_dialog_class_init (GtkFontChooserDialogClass *klass)
 }
 
 static void
+update_button_adapter (GtkFontChooserDialog *dialog,
+                       GParamSpec          **pspec,
+                       gpointer              user_data)
+{
+  update_button (dialog);
+}
+
+static void
+update_tweak_button_adapter (GtkFontChooserDialog *dialog,
+                             GParamSpec          **pspec,
+                             gpointer              user_data)
+{
+  update_tweak_button (dialog);
+}
+
+static void
 gtk_font_chooser_dialog_init (GtkFontChooserDialog *dialog)
 {
   gtk_widget_init_template (GTK_WIDGET (dialog));
@@ -276,10 +292,10 @@ gtk_font_chooser_dialog_init (GtkFontChooserDialog *dialog)
                                   GTK_FONT_CHOOSER (dialog->fontchooser));
 
   g_signal_connect_swapped (dialog->fontchooser, "notify::font-desc",
-                            G_CALLBACK (update_button), dialog);
+                            G_CALLBACK (update_button_adapter), dialog);
   update_button (dialog);
   g_signal_connect_swapped (dialog->fontchooser, "notify::level",
-                            G_CALLBACK (update_tweak_button), dialog);
+                            G_CALLBACK (update_tweak_button_adapter), dialog);
 }
 
 /**

@@ -819,6 +819,22 @@ gtk_shortcuts_window_class_init (GtkShortcutsWindowClass *klass)
 }
 
 static void
+gtk_shortcuts_window__search_mode__changed_adapter (GtkShortcutsWindow *self,
+                                                    GParamSpec        **pspec,
+                                                    gpointer            user_data)
+{
+  gtk_shortcuts_window__search_mode__changed (self);
+}
+
+static void
+update_title_stack_adapter (GtkShortcutsWindow *self,
+                            GParamSpec        **pspec,
+                            gpointer            user_data)
+{
+  update_title_stack (self);
+}
+
+static void
 gtk_shortcuts_window_init (GtkShortcutsWindow *self)
 {
   GtkWidget *search_button;
@@ -916,7 +932,7 @@ gtk_shortcuts_window_init (GtkShortcutsWindow *self)
                            G_CONNECT_SWAPPED);
   g_signal_connect_object (self->search_bar,
                            "notify::search-mode-enabled",
-                           G_CALLBACK (gtk_shortcuts_window__search_mode__changed),
+                           G_CALLBACK (gtk_shortcuts_window__search_mode__changed_adapter),
                            self,
                            G_CONNECT_SWAPPED);
 
@@ -978,6 +994,6 @@ gtk_shortcuts_window_init (GtkShortcutsWindow *self)
   gtk_stack_add_named (self->stack, empty, "no-search-results");
 
   g_signal_connect_object (self->stack, "notify::visible-child",
-                           G_CALLBACK (update_title_stack), self, G_CONNECT_SWAPPED);
+                           G_CALLBACK (update_title_stack_adapter), self, G_CONNECT_SWAPPED);
 
 }

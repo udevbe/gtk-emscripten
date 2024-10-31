@@ -850,6 +850,14 @@ remove_custom_paper_adapter (GtkCustomPaperUnixDialog *dialog,
 }
 
 static void
+margins_from_printer_changed_adapter (GtkCustomPaperUnixDialog *dialog,
+                                      GParamSpec              **pspec,
+                                      gpointer                  user_data)
+{
+  margins_from_printer_changed (dialog);
+}
+
+static void
 populate_dialog (GtkCustomPaperUnixDialog *dialog)
 {
   GtkDialog *cpu_dialog = GTK_DIALOG (dialog);
@@ -1008,7 +1016,7 @@ G_GNUC_END_IGNORE_DEPRECATIONS
   gtk_box_append (GTK_BOX (hbox), combo);
 
   g_signal_connect_swapped (combo, "notify::selected",
-                            G_CALLBACK (margins_from_printer_changed), dialog);
+                            G_CALLBACK (margins_from_printer_changed_adapter), dialog);
 
   frame = wrap_in_frame (_("Paper Margins"), grid);
   gtk_box_append (GTK_BOX (vbox), frame);

@@ -3842,6 +3842,14 @@ gtk_scrolled_window_update_use_indicators (GtkScrolledWindow *scrolled_window)
 }
 
 static void
+gtk_scrolled_window_update_use_indicators_adapter (GtkScrolledWindow *scrolled_window,
+                                                   GParamSpec       **pspec,
+                                                   gpointer           user_data)
+{
+  gtk_scrolled_window_update_use_indicators (scrolled_window);
+}
+
+static void
 gtk_scrolled_window_realize (GtkWidget *widget)
 {
   GtkScrolledWindow *scrolled_window = GTK_SCROLLED_WINDOW (widget);
@@ -3855,7 +3863,7 @@ gtk_scrolled_window_realize (GtkWidget *widget)
 
   settings = gtk_widget_get_settings (widget);
   g_signal_connect_swapped (settings, "notify::gtk-overlay-scrolling",
-                            G_CALLBACK (gtk_scrolled_window_update_use_indicators), widget);
+                            G_CALLBACK (gtk_scrolled_window_update_use_indicators_adapter), widget);
 
   GTK_WIDGET_CLASS (gtk_scrolled_window_parent_class)->realize (widget);
 }

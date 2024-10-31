@@ -178,6 +178,14 @@ button_role_changed (GtkCheckButton *self)
 }
 
 static void
+button_role_changed_adapter (GtkCheckButton *self,
+                             GParamSpec    **pspec,
+                             gpointer        user_data)
+{
+  button_role_changed (self);
+}
+
+static void
 ensure_action_helper (GtkCheckButton *self)
 {
   GtkCheckButtonPrivate *priv = gtk_check_button_get_instance_private (self);
@@ -187,7 +195,7 @@ ensure_action_helper (GtkCheckButton *self)
 
   priv->action_helper = gtk_action_helper_new (GTK_ACTIONABLE (self));
   g_signal_connect_swapped (priv->action_helper, "notify::role",
-                            G_CALLBACK (button_role_changed), self);
+                            G_CALLBACK (button_role_changed_adapter), self);
 }
 
 static void

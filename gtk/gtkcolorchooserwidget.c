@@ -203,12 +203,20 @@ save_custom_colors (GtkColorChooserWidget *cc)
 }
 
 static void
+save_custom_colors_adapter (GtkColorChooserWidget *cc,
+                            GParamSpec    **pspec,
+                            gpointer        user_data)
+{
+  save_custom_colors (cc);
+}
+
+static void
 connect_custom_signals (GtkWidget *p,
                         gpointer   data)
 {
   connect_swatch_signals (p, data);
   g_signal_connect_swapped (p, "notify::rgba",
-                            G_CALLBACK (save_custom_colors), data);
+                            G_CALLBACK (save_custom_colors_adapter), data);
 }
 
 static void

@@ -346,6 +346,14 @@ gtk_header_bar_get_title_widget (GtkHeaderBar *bar)
 }
 
 static void
+update_title_adapter (GtkHeaderBar *bar,
+                      GParamSpec  **pspec,
+                      gpointer      user_data)
+{
+  update_title (bar);
+}
+
+static void
 gtk_header_bar_root (GtkWidget *widget)
 {
   GtkWidget *root;
@@ -356,7 +364,7 @@ gtk_header_bar_root (GtkWidget *widget)
 
   if (GTK_IS_WINDOW (root))
     g_signal_connect_swapped (root, "notify::title",
-                              G_CALLBACK (update_title), widget);
+                              G_CALLBACK (update_title_adapter), widget);
 
   update_title (GTK_HEADER_BAR (widget));
 }

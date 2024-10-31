@@ -428,6 +428,14 @@ gtk_icon_helper_init (GtkIconHelper *self)
   self->def = gtk_image_definition_new_empty ();
 }
 
+static void
+gtk_icon_helper_invalidate_adapter (GtkIconHelper *self,
+                                    GParamSpec   **pspec,
+                                    gpointer       user_data)
+{
+  gtk_icon_helper_invalidate (self);
+}
+
 GtkIconHelper *
 gtk_icon_helper_new (GtkCssNode *css_node,
                      GtkWidget  *owner)
@@ -442,7 +450,7 @@ gtk_icon_helper_new (GtkCssNode *css_node,
   self->node = css_node;
   self->owner = owner;
   g_signal_connect_swapped (owner, "direction-changed", G_CALLBACK (gtk_icon_helper_invalidate), self);
-  g_signal_connect_swapped (owner, "notify::scale-factor", G_CALLBACK (gtk_icon_helper_invalidate), self);
+  g_signal_connect_swapped (owner, "notify::scale-factor", G_CALLBACK (gtk_icon_helper_invalidate_adapter), self);
 
   return self;
 }
