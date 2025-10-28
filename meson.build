@@ -762,6 +762,8 @@ if get_option('demos')
   subdir('demos')
 endif
 
+subdir('tools')
+
 if get_option('build-tests')
   subdir('tests')
 endif
